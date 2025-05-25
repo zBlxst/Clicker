@@ -9,7 +9,7 @@ class GameManager;
 
 
 class Button {
-private:
+protected:
     unsigned int m_x;
     unsigned int m_y;
     unsigned int m_width;
@@ -18,11 +18,11 @@ private:
     WindowManager& m_window_manager;
 
     // std::function<void(WindowManager&)> m_callback;
-    void callback();    
+    virtual void callback();
 
 public:
     Button(unsigned int x, unsigned int y, unsigned int width, unsigned int height, 
         WindowManager& window_manager);
     bool catched_click(unsigned int x, unsigned int y);
-    void display();
+    virtual void display();
 };

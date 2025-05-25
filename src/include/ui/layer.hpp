@@ -7,7 +7,7 @@ class Button;
 class WindowManager;
 
 class Layer {
-private:
+protected:
     WindowManager& m_window_manager;
     std::vector<std::shared_ptr<Button>> m_all_buttons;
 public:

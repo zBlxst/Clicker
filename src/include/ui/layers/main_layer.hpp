@@ -5,9 +5,7 @@
 
 #include <ui/layer.hpp>
 
-class Button;
-
-class MainLayer : Layer {
+class MainLayer : public Layer {
 private:
 
 public:
