@@ -23,3 +23,7 @@ void Building::level_up() {
         m_level += 1;
     }
 }
+
+double Building::get_gain() {
+    return BASE_PRODS[m_index]*m_level;
+}

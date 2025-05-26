@@ -5,7 +5,6 @@
 #include "game_manager.hpp"
 #include "building.hpp"
 
-
 #include <iostream>
 #include <format>
 
@@ -18,15 +17,18 @@ WindowManager::WindowManager(unsigned int width, unsigned int height, GameManage
 
 void WindowManager::start() {
     
+    m_game_manager.start();
     MainLayer layer = MainLayer(std::ref(*this));
     
-
+    
     while (m_window.isOpen())
     {
         while (const std::optional event = m_window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>()) {
                 m_window.close();
+                m_game_manager.stop();
+            }
             if (const sf::Event::MouseButtonReleased* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (buttonPressed->button == sf::Mouse::Button::Left) {
                     layer.recv_click(buttonPressed->position.x, buttonPressed->position.y);
