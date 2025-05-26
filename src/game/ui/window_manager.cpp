@@ -1,6 +1,6 @@
 #include "ui/window_manager.hpp"
 
-#include "ui/layers/main_layer.hpp"
+#include "ui/layers/main_layer/main_layer.hpp"
 #include "ui/button.hpp"
 #include "game_manager.hpp"
 #include "building.hpp"
@@ -9,16 +9,20 @@
 #include <format>
 
 WindowManager::WindowManager(unsigned int width, unsigned int height, GameManager& game_manager) : 
+    m_width(width),
+    m_height(height),
     m_window(sf::VideoMode({width, height}), "mygame"),
     m_game_manager(game_manager),
     m_all_layers(),
     m_font("assets/arial.ttf"),
-    m_text(m_font) {}
+    m_text(m_font) {
+        std::shared_ptr<MainLayer> layer = std::make_shared<MainLayer>(std::ref(*this));
+        m_all_layers.push_back(layer);
+    }
 
 void WindowManager::start() {
     
     m_game_manager.start();
-    MainLayer layer = MainLayer(std::ref(*this));
     
     
     while (m_window.isOpen())
@@ -31,7 +35,7 @@ void WindowManager::start() {
             }
             if (const sf::Event::MouseButtonReleased* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (buttonPressed->button == sf::Mouse::Button::Left) {
-                    layer.recv_click(buttonPressed->position.x, buttonPressed->position.y);
+                    m_all_layers.back()->recv_click(buttonPressed->position.x, buttonPressed->position.y);
                     // m_game_manager.click();
                 }
                     
@@ -40,10 +44,14 @@ void WindowManager::start() {
         }
 
         m_window.clear();
-        layer.display();
+        m_all_layers.back()->display();
         draw_text(std::format("Money {}", (int)m_game_manager.get_money()), 0, 0, 15, WHITE);
         m_window.display();
     }
+}
+
+void WindowManager::pop_layer() {
+    m_all_layers.pop_back();
 }
 
 void WindowManager::draw_rect(  unsigned int x, unsigned int y, 

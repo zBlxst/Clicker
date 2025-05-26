@@ -10,9 +10,10 @@ class Layer {
 protected:
     WindowManager& m_window_manager;
     std::vector<std::shared_ptr<Button>> m_all_buttons;
+    
 public:
     Layer(WindowManager& window_manager);
-    void display();
+    virtual void display();
     void recv_click(unsigned int x, unsigned int y);
 
 };
