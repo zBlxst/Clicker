@@ -16,8 +16,8 @@ WindowManager::WindowManager(unsigned int width, unsigned int height, GameManage
     m_all_layers(),
     m_font("assets/arial.ttf"),
     m_text(m_font) {
-        std::shared_ptr<MainLayer> layer = std::make_shared<MainLayer>(std::ref(*this));
-        m_all_layers.push_back(layer);
+        std::shared_ptr<MainLayer> main_layer = std::make_shared<MainLayer>(std::ref(*this));
+        m_all_layers.push_back(main_layer);
     }
 
 void WindowManager::start() {
