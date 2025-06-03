@@ -13,7 +13,8 @@ Button::Button( unsigned int x, unsigned int y,
 
 bool Button::catched_click(unsigned int x, unsigned int y) {
     if (   (m_x < x && x < m_x + m_width)
-        && (m_y < y && y < m_y + m_height)) {
+        && (m_y < y && y < m_y + m_height)
+        && should_catch_click()) {
             callback();
             return true;
         }
@@ -27,4 +28,9 @@ void Button::callback() {
 void Button::display() {
     m_window_manager.draw_rect(m_x, m_y, m_width, m_height);
 }
+
+bool Button::should_catch_click() {
+    return true;
+}
+
 

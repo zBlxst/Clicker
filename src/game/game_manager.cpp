@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 GameManager::GameManager() : 
-    m_money(0),
+    m_money(300),
     m_all_buildings(),
     m_buildings_thread(&GameManager::building_gain_function, this),
     m_running(false) {
@@ -32,6 +32,15 @@ void GameManager::add_money(double amount) {
         exit(1);
     }
 }
+
+bool GameManager::buy(double cost) {
+    if (m_money < cost) {
+        return false;
+    }
+    m_money -= cost;
+    return true;
+}
+
 
 void GameManager::building_gain_function() {
     // Wait for the game_manager to run

@@ -7,7 +7,8 @@
 Building::Building(int index, GameManager& game_manager) : 
     m_index(index),
     m_game_manager(game_manager),
-    m_level(0) {}
+    m_level(0),
+    m_multiplicative_buff(1) {}
 
 unsigned int Building::get_level() {
     return m_level;
@@ -18,12 +19,11 @@ double Building::get_cost() {
 }
 
 void Building::level_up() {
-    if (m_game_manager.get_money() >= get_cost()) {
-        m_game_manager.add_money(-get_cost());
+    if (m_game_manager.buy(get_cost())) {
         m_level += 1;
     }
 }
 
 double Building::get_gain() {
-    return BASE_PRODS[m_index]*m_level;
+    return BASE_PRODS[m_index]*m_level*m_multiplicative_buff;
 }

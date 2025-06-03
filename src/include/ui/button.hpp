@@ -19,6 +19,7 @@ protected:
 
     // std::function<void(WindowManager&)> m_callback;
     virtual void callback();
+    virtual bool should_catch_click();
 
 public:
     Button(unsigned int x, unsigned int y, unsigned int width, unsigned int height, 

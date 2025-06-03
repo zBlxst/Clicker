@@ -25,6 +25,7 @@ public:
     void click();
     double get_money();
     void add_money(double amount);
+    bool buy(double cost);
     
     std::vector<std::shared_ptr<Building>>& get_all_buildings();
 
