@@ -1,16 +1,25 @@
 #include "game_manager.hpp"
 
 #include "building.hpp"
+#include "building_upgrade.hpp"
 #include <unistd.h>
 
 GameManager::GameManager() : 
-    m_money(300),
+    m_money(3000),
     m_all_buildings(),
+    m_all_building_upgrades(),
     m_buildings_thread(&GameManager::building_gain_function, this),
     m_running(false) {
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             std::shared_ptr<Building> b = std::make_shared<Building>(i, std::ref(*this));
             m_all_buildings.push_back(b);
+        }
+
+        for (int i = 0; i < Building::N_BUILDINGS; i++) {
+            for (int j = 0; j < BuildingUpgrade::N_UPGRADES; j++) {
+                std::shared_ptr<BuildingUpgrade> b_up = std::make_shared<BuildingUpgrade>(i, j, std::ref(*this));
+                m_all_building_upgrades.push_back(b_up);
+            }    
         }
 }
 
@@ -24,6 +33,10 @@ void GameManager::click() {
 
 std::vector<std::shared_ptr<Building>>& GameManager::get_all_buildings() {
     return m_all_buildings;
+}
+
+std::vector<std::shared_ptr<BuildingUpgrade>>& GameManager::get_all_upgrades() {
+    return m_all_building_upgrades;
 }
 
 void GameManager::add_money(double amount) {

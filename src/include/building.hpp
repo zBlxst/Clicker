@@ -23,7 +23,7 @@ public:
 protected:
     GameManager& m_game_manager;
 
-    unsigned int m_index;
+    int m_index;
     unsigned int m_level;
 
     
@@ -32,6 +32,7 @@ public:
 
     Building(int index, GameManager& game_manager);
     unsigned int get_level();
+    int get_index();
     double get_cost();
     double get_gain();
     void level_up();

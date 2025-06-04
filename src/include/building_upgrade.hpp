@@ -6,9 +6,11 @@ class GameManager;
 
 class BuildingUpgrade {
 
-public:
+    public:
     static constexpr int N_UPGRADES = 19;
-
+    const unsigned int m_building_index;
+    const unsigned int m_upgrade_index;
+    
 private:
     static constexpr double UPGRADE_REQS[N_UPGRADES] = {5, 25, 75, 150, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1250, 1500, 1750, 2000, 2500};
     static constexpr double UPGRADE_BUFFS[N_UPGRADES] = {2, 3, 4, 5, 6, 5, 4, 3, 2, 3, 4, 5, 6, 5, 4, 5, 6, 5, 4};
@@ -28,8 +30,6 @@ private:
 
     GameManager& m_game_manager;
 
-    unsigned int m_building_index;
-    unsigned int m_upgrade_index;
     bool m_bought;
 
 public:
