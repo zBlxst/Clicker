@@ -4,11 +4,15 @@
 #include <vector>
 #include <thread>
 
+#include "stat_tracker.hpp"
+
 class Building;
 class BuildingUpgrade;
 
 class GameManager {
 private:
+    StatTracker& m_stat_tracker;
+
     double m_money;
     std::vector<std::shared_ptr<Building>> m_all_buildings;
     std::vector<std::shared_ptr<BuildingUpgrade>> m_all_building_upgrades;
@@ -17,10 +21,10 @@ private:
 
     bool m_running;
 
-    void building_gain_function();
+    void gain_function_for_thread();
 
 public:
-    GameManager();
+    GameManager(StatTracker& stat_tracker);
     
     void start();
     void stop();
@@ -33,5 +37,7 @@ public:
     
     std::vector<std::shared_ptr<Building>>& get_all_buildings();
     std::vector<std::shared_ptr<BuildingUpgrade>>& get_all_upgrades();
+
+    StatTracker& get_stat_tracker();
 
 };

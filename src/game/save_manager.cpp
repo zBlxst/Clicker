@@ -15,7 +15,7 @@ SaveManager::SaveManager(std::string file_name, GameManager& game_manager) :
     m_file_name(file_name) {}
 
 SaveManager::SaveManager(GameManager& game_manager) : 
-    SaveManager(SaveManager::default_save_file, game_manager) {}
+    SaveManager(SaveManager::DEFAULT_SAVE_FILE, game_manager) {}
 
 
 void SaveManager::load_building(std::string object, std::string value) {
@@ -29,7 +29,7 @@ void SaveManager::load_building_upgrade(std::string object, std::string value) {
     int upgrade_index = std::stoi(object.substr(object.find("-")+1, object.size() - object.find("-")+1));
     bool bought = value == "true";
     if (bought) {
-        m_game_manager.get_all_upgrades()[building_index*Building::N_BUILDINGS + upgrade_index]->buy();
+        m_game_manager.get_all_upgrades()[building_index*BuildingUpgrade::N_UPGRADES + upgrade_index]->buy();
     }
 }
 
@@ -43,8 +43,9 @@ void SaveManager::load_save() {
         std::string type = buffer.substr(0, colon_index);
         std::string object = buffer.substr(colon_index + 3, arrow_index-colon_index - 3);
         std::string value = buffer.substr(arrow_index + 4, buffer.size()-arrow_index - 4);
-        // std::cout << "Type : " << type << ", object : " << object << ", value : " << value << std::endl;
         
+        printf("Type : \"%s\" / Object : \"%s\" / Value : \"%s\"\n", type.c_str(), object.c_str(), value.c_str());
+
         if (type == "Gold") {
             m_game_manager.set_money(std::stod(value));
         } else if (type == "Building") {

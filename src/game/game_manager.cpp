@@ -4,11 +4,12 @@
 #include "building_upgrade.hpp"
 #include <unistd.h>
 
-GameManager::GameManager() : 
+GameManager::GameManager(StatTracker& stat_tracker) :
+    m_stat_tracker(stat_tracker),
     m_money(3000),
     m_all_buildings(),
     m_all_building_upgrades(),
-    m_buildings_thread(&GameManager::building_gain_function, this),
+    m_buildings_thread(&GameManager::gain_function_for_thread, this),
     m_running(false) {
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             std::shared_ptr<Building> b = std::make_shared<Building>(i, std::ref(*this));
@@ -28,6 +29,7 @@ double GameManager::get_money() {
 }
 
 void GameManager::click() {
+    m_stat_tracker.m_clicks++;
     m_money += 1;
 }
 
@@ -63,13 +65,16 @@ bool GameManager::buy(double cost) {
 }
 
 
-void GameManager::building_gain_function() {
+void GameManager::gain_function_for_thread() {
     // Wait for the game_manager to run
     while (!m_running) {}
     while (m_running) {
+        double last_second_gain = 0;
         for (std::shared_ptr<Building> building: get_all_buildings()) {
-            add_money(building->get_gain() / 2);
+            add_money(building->get_gain());
+            last_second_gain += building->get_gain();
         }
+        m_stat_tracker.m_last_second_gain = last_second_gain;
         sleep(1);
     }
 }
@@ -82,4 +87,8 @@ void GameManager::start() {
 void GameManager::stop() {
     m_running = false;
     m_buildings_thread.join();
+}
+
+StatTracker& GameManager::get_stat_tracker() {
+    return m_stat_tracker;
 }

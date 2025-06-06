@@ -22,7 +22,6 @@ double BuildingUpgrade::get_upgrade_cost() {
 
 void BuildingUpgrade::buy() {
     if (!m_bought && m_game_manager.buy(get_upgrade_cost())) {
-        std::cout << "Here" << m_building_index << m_upgrade_index << std::endl;
         m_bought = true;
         m_game_manager.get_all_buildings()[m_building_index]->m_multiplicative_buff *= get_buff();
     }

@@ -4,10 +4,12 @@
 #include "ui/window_manager.hpp"
 #include "game_manager.hpp"
 #include "save_manager.hpp"
+#include "stat_tracker.hpp"
 
 int main()
 {
-    GameManager gm = GameManager();
+    StatTracker st = StatTracker();
+    GameManager gm = GameManager(st);
     SaveManager sm = SaveManager(gm);
     
     std::cout << "Starting the game" << std::endl;

@@ -25,7 +25,7 @@ void Building::level_up() {
 }
 
 double Building::get_gain() {
-    return BASE_PRODS[m_index]*m_level*m_multiplicative_buff;
+    return BASE_PRODS[m_index]*m_level*m_multiplicative_buff / 2;
 }
 
 int Building::get_index() {

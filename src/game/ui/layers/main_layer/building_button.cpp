@@ -18,7 +18,8 @@ void BuildingButton::callback() {
 void BuildingButton::display() {
     Button::display();
     std::vector<std::string> to_write = {   std::format("Level : {}", std::round(m_game_manager.get_all_buildings()[m_index]->get_level())),
-                                            std::format("Cost : {}", std::round(m_game_manager.get_all_buildings()[m_index]->get_cost()))
+                                            std::format("Cost : {}", std::round(m_game_manager.get_all_buildings()[m_index]->get_cost())),
+                                            std::format("Gain : {}/s", std::round(m_game_manager.get_all_buildings()[m_index]->get_gain())),
                                         }; 
     m_window_manager.draw_text(to_write, m_x, m_y, 15, WindowManager::BLACK);
 }

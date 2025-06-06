@@ -36,7 +36,6 @@ void WindowManager::start() {
             if (const sf::Event::MouseButtonReleased* buttonPressed = event->getIf<sf::Event::MouseButtonReleased>()) {
                 if (buttonPressed->button == sf::Mouse::Button::Left) {
                     m_all_layers.back()->recv_click(buttonPressed->position.x, buttonPressed->position.y);
-                    // m_game_manager.click();
                 }
                     
             }
@@ -45,7 +44,10 @@ void WindowManager::start() {
 
         m_window.clear();
         m_all_layers.back()->display();
-        draw_text(std::format("Money {}", (int)m_game_manager.get_money()), 0, 0, 15, WHITE);
+        std::string money_text = std::format("Money {}", (int)m_game_manager.get_money());
+        std::string gain_text = std::format("Gain {}/s", (int)m_game_manager.get_stat_tracker().m_last_second_gain);
+        std::vector<std::string> to_print = {money_text, gain_text};
+        draw_text(to_print, 0, 0, 15, WHITE);
         m_window.display();
     }
 }
