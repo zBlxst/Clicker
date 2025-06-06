@@ -31,3 +31,7 @@ double Building::get_gain() {
 int Building::get_index() {
     return m_index;
 }
+
+void Building::set_level(int value) {
+    m_level = value;
+}

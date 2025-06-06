@@ -38,6 +38,7 @@ public:
     int get_buff();
     double get_upgrade_cost();
     void buy();
-    bool is_available();
 
+    bool is_available();
+    bool is_bought();
 };

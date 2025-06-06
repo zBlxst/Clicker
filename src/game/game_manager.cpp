@@ -46,7 +46,15 @@ void GameManager::add_money(double amount) {
     }
 }
 
+void GameManager::set_money(double value) {
+    m_money = value;
+}
+
 bool GameManager::buy(double cost) {
+    // If not running, it's probably loading a save
+    if (!m_running) {
+        return true;
+    }
     if (m_money < cost) {
         return false;
     }

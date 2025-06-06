@@ -36,4 +36,5 @@ public:
     double get_cost();
     double get_gain();
     void level_up();
+    void set_level(int value);
 };
