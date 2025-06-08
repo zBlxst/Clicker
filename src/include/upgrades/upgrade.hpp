@@ -27,7 +27,7 @@ public:
     virtual double get_cost() = 0;
     virtual double get_buff() = 0;
     void buy();
-    virtual bool is_available() = 0;
+    virtual bool is_available();
     virtual void buy_callback() = 0;
 
     bool is_bought();

@@ -3,8 +3,10 @@
 #include "upgrades/upgrade.hpp"
 #include "building.hpp"
 #include "upgrades/building_upgrade.hpp"
+#include "upgrades/click_upgrade.hpp"
 
 #include <unistd.h>
+#include <iostream>
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
@@ -14,14 +16,18 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_buildings_thread(&GameManager::gain_function_for_thread, this),
     m_click_additive_upgrade(0),
     m_running(false) {
+        // Initialisation of upgrades vectors
         for (int i = 0; i < Upgrade::TYPES::N_ITEMS; i++) {
             m_all_upgrades.push_back(std::vector<std::shared_ptr<Upgrade>>());
         }
+
+        // Initialisation of buildings
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             std::shared_ptr<Building> b = std::make_shared<Building>(i, std::ref(*this));
             m_all_buildings.push_back(b);
         }
 
+        // Initialisation of building upgrades
         int n_upgrade = 0;
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             for (int j = 0; j < BuildingUpgrade::N_UPGRADES; j++) {
@@ -29,6 +35,17 @@ GameManager::GameManager(StatTracker& stat_tracker) :
                 m_all_upgrades[Upgrade::TYPES::BUILDING].push_back(b_up);
             }    
         }
+
+        // Initialisation of click upgrades
+        int n_upgrades = 0;
+        for (int i = 0; i < ClickUpgrade::N_UPGRADES; i++) {
+            std::shared_ptr<ClickUpgrade> c_up = std::make_shared<ClickUpgrade>(i, n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::CLICK].push_back(c_up);
+        }
+}
+
+void GameManager::add_click_additive_upgrade(double amount) {
+    m_click_additive_upgrade += amount;
 }
 
 double GameManager::get_money() {
@@ -37,6 +54,7 @@ double GameManager::get_money() {
 
 void GameManager::click() {
     m_stat_tracker.m_clicks++;
+    std::cout << "Clicks : " << m_stat_tracker.m_clicks << std::endl;
     m_money += (1+m_click_additive_upgrade);
 }
 

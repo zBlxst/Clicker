@@ -18,5 +18,11 @@ private:
 public:
     ClickUpgrade(int index, unsigned int index_in_gm, GameManager& game_manager);
 
+    double get_cost();
+    double get_buff();
+    bool is_available();
+    void buy_callback();
+
+
     std::vector<std::string> get_base_text_to_display();
 };

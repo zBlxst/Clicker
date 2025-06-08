@@ -33,5 +33,5 @@ std::vector<std::string> BuildingUpgrade::get_base_text_to_display() {
 }
 
 bool BuildingUpgrade::is_available() {
-    return !m_bought && m_game_manager.get_all_buildings()[m_building_index]->get_level() >= get_req();
+    return Upgrade::is_available() && m_game_manager.get_all_buildings()[m_building_index]->get_level() >= get_req();
 }
