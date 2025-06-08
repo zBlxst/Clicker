@@ -7,7 +7,7 @@
 #include "stat_tracker.hpp"
 
 class Building;
-class BuildingUpgrade;
+class Upgrade;
 
 class GameManager {
 private:
@@ -15,9 +15,11 @@ private:
 
     double m_money;
     std::vector<std::shared_ptr<Building>> m_all_buildings;
-    std::vector<std::shared_ptr<BuildingUpgrade>> m_all_building_upgrades;
+    std::vector<std::vector<std::shared_ptr<Upgrade>>> m_all_upgrades;
 
     std::thread m_buildings_thread;
+
+    bool m_click_additive_upgrade;
 
     bool m_running;
 
@@ -36,7 +38,7 @@ public:
     bool buy(double cost);
     
     std::vector<std::shared_ptr<Building>>& get_all_buildings();
-    std::vector<std::shared_ptr<BuildingUpgrade>>& get_all_upgrades();
+    std::vector<std::vector<std::shared_ptr<Upgrade>>>& get_all_upgrades();
 
     StatTracker& get_stat_tracker();
 

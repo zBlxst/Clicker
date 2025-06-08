@@ -1,12 +1,13 @@
 #pragma once
 
 #include "building.hpp"
+#include "upgrades/upgrade.hpp"
 
 class GameManager;
 
-class BuildingUpgrade {
+class BuildingUpgrade : public Upgrade {
 
-    public:
+public:
     static constexpr int N_UPGRADES = 19;
     const unsigned int m_building_index;
     const unsigned int m_upgrade_index;
@@ -28,17 +29,15 @@ private:
         {40000000000000.0, 1300000000000000.0, 2.1e+18, 1e+23, 1.4e+26, 1.95e+32, 2.65e+38, 3.57e+44, 4.72e+50, 6.16e+56, 7.96e+62, 1.02e+69, 1.3e+75, 1.64e+81, 2.24e+90, 3.56e+105, 5.66e+120, 8.95e+135, 2.11e+166},
     };
 
-    GameManager& m_game_manager;
-
-    bool m_bought;
 
 public:
-    BuildingUpgrade(unsigned int building_index, unsigned int upgrade_index, GameManager& game_manager);
+    BuildingUpgrade(unsigned int building_index, unsigned int upgrade_index, unsigned int index_in_gm, GameManager& game_manager);
     int get_req();
-    int get_buff();
-    double get_upgrade_cost();
-    void buy();
+    double get_buff();
+    double get_cost();
+    void buy_callback();
 
     bool is_available();
-    bool is_bought();
+
+    std::vector<std::string> get_base_text_to_display();
 };

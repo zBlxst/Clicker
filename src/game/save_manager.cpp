@@ -1,9 +1,9 @@
 #include "save_manager.hpp"
 
 #include "game_manager.hpp"
+#include "building.hpp"
+#include "upgrades/building_upgrade.hpp"
 
-#include <building.hpp>
-#include <building_upgrade.hpp>
 #include <fstream>
 #include <iostream>
 #include <format>
@@ -25,11 +25,10 @@ void SaveManager::load_building(std::string object, std::string value) {
 }
 
 void SaveManager::load_building_upgrade(std::string object, std::string value) {
-    int building_index = std::stoi(object.substr(object.find("-")-1));
-    int upgrade_index = std::stoi(object.substr(object.find("-")+1, object.size() - object.find("-")+1));
+    int index_in_gm = std::stoi(object);
     bool bought = value == "true";
     if (bought) {
-        m_game_manager.get_all_upgrades()[building_index*BuildingUpgrade::N_UPGRADES + upgrade_index]->buy();
+        m_game_manager.get_all_upgrades()[Upgrade::TYPES::BUILDING][index_in_gm]->buy();
     }
 }
 
@@ -44,7 +43,7 @@ void SaveManager::load_save() {
         std::string object = buffer.substr(colon_index + 3, arrow_index-colon_index - 3);
         std::string value = buffer.substr(arrow_index + 4, buffer.size()-arrow_index - 4);
         
-        printf("Type : \"%s\" / Object : \"%s\" / Value : \"%s\"\n", type.c_str(), object.c_str(), value.c_str());
+        // printf("Type : \"%s\" / Object : \"%s\" / Value : \"%s\"\n", type.c_str(), object.c_str(), value.c_str());
 
         if (type == "Gold") {
             m_game_manager.set_money(std::stod(value));
@@ -62,8 +61,8 @@ void SaveManager::store_save() {
     for (std::shared_ptr<Building> building: m_game_manager.get_all_buildings()) {
         file_stream << std::format("Building : {} -> {}\n", building->get_index(), building->get_level());
     }
-    for (std::shared_ptr<BuildingUpgrade> b_up: m_game_manager.get_all_upgrades()) {
-        file_stream << std::format("BuildingUpgrade : {}-{} -> {}\n", b_up->m_building_index, b_up->m_upgrade_index, b_up->is_bought());
+    for (std::shared_ptr<Upgrade> b_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::BUILDING]) {
+        file_stream << std::format("BuildingUpgrade : {} -> {}\n", b_up->m_index_in_gm, b_up->is_bought());
     }
     
     file_stream.close();
