@@ -16,6 +16,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_buildings_thread(&GameManager::gain_function_for_thread, this),
     m_click_additive_upgrade(0),
     m_running(false) {
+        int n_upgrade;
         // Initialisation of upgrades vectors
         for (int i = 0; i < Upgrade::TYPES::N_ITEMS; i++) {
             m_all_upgrades.push_back(std::vector<std::shared_ptr<Upgrade>>());
@@ -28,7 +29,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         }
 
         // Initialisation of building upgrades
-        int n_upgrade = 0;
+        n_upgrade = 0;
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             for (int j = 0; j < BuildingUpgrade::N_UPGRADES; j++) {
                 std::shared_ptr<BuildingUpgrade> b_up = std::make_shared<BuildingUpgrade>(i, j, n_upgrade++,std::ref(*this));
@@ -37,7 +38,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         }
 
         // Initialisation of click upgrades
-        int n_upgrades = 0;
+        n_upgrade = 0;
         for (int i = 0; i < ClickUpgrade::N_UPGRADES; i++) {
             std::shared_ptr<ClickUpgrade> c_up = std::make_shared<ClickUpgrade>(i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::CLICK].push_back(c_up);
