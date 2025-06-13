@@ -10,7 +10,7 @@ class UpgradeButton : public Button {
 
 private:
     static constexpr unsigned int BASE_POS_X = 10;
-    static constexpr unsigned int BASE_POS_Y = 50;
+    static constexpr unsigned int BASE_POS_Y = 70;
     static constexpr unsigned int WIDTH = 100;
     static constexpr unsigned int HEIGHT = 100;
     static constexpr unsigned int V_SPACING = 10;

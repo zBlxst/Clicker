@@ -53,8 +53,8 @@ void SaveManager::load_misc_save() {
             load_building(object, value);
         } else if (type == "BuildingUpgrade") {
             load_upgrade(object, value, Upgrade::TYPES::BUILDING);
-        } else if (type == "ClickUpgrade") {
-            load_upgrade(object, value, Upgrade::TYPES::CLICK);
+        } else if (type == "MiscUpgrade") {
+            load_upgrade(object, value, Upgrade::TYPES::MISC);
         } else {
             std::cout << std::format("Unknown misc type {}\n", type);
             exit(1);
@@ -78,8 +78,8 @@ void SaveManager::store_misc_save() {
     }
 
     // Click upgrades
-    for (std::shared_ptr<Upgrade> b_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::CLICK]) {
-        file_stream << std::format("ClickUpgrade : {} -> {}\n", b_up->m_index_in_gm, b_up->is_bought());
+    for (std::shared_ptr<Upgrade> b_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::MISC]) {
+        file_stream << std::format("MiscUpgrade : {} -> {}\n", b_up->m_index_in_gm, b_up->is_bought());
     }
     
     file_stream.close();
@@ -100,6 +100,10 @@ void SaveManager::load_stat_save() {
 
         if (type == "Clicks") {
             m_game_manager.get_stat_tracker().m_clicks = std::stoi(value);
+        } else if (type == "Click gain") {
+            m_game_manager.get_stat_tracker().m_click_gain = std::stod(value);
+        } else if (type == "Total gain") {
+            m_game_manager.get_stat_tracker().m_total_gain = std::stod(value); 
         } else {
             std::cout << std::format("Unknown stat type {}\n", type);
             exit(1);
@@ -112,6 +116,8 @@ void SaveManager::store_stat_save() {
     std::ofstream file_stream(m_stat_file_name);
 
     file_stream << std::format("Clicks : () -> {}\n", m_game_manager.get_stat_tracker().m_clicks);
+    file_stream << std::format("Click gain : () -> {}\n", m_game_manager.get_stat_tracker().m_click_gain);
+    file_stream << std::format("Total gain : () -> {}\n", m_game_manager.get_stat_tracker().m_total_gain);
 
     file_stream.close();
 }

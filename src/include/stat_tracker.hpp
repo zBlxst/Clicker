@@ -11,6 +11,8 @@ private:
 public:
     unsigned int m_clicks;
     double m_last_second_gain;
+    double m_click_gain;
+    double m_total_gain;
 
     StatTracker(std::string file_name);
     StatTracker();

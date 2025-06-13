@@ -20,6 +20,9 @@ private:
     std::thread m_buildings_thread;
 
     double m_click_additive_upgrade;
+    double m_click_multiplicative_upgrade;
+    double m_money_multiplicative_upgrade;
+    double m_click_percent_of_total_prod;
 
     bool m_running;
 
@@ -38,6 +41,12 @@ public:
     bool buy(double cost);
     
     void add_click_additive_upgrade(double amount);
+    void add_click_multiplicative_upgrade(double amount);
+    void add_money_multiplicative_upgrade(double amount);
+    void add_click_percent_of_prod(double amount);
+
+    double get_prod();
+    double get_click_gain();
 
     std::vector<std::shared_ptr<Building>>& get_all_buildings();
     std::vector<std::vector<std::shared_ptr<Upgrade>>>& get_all_upgrades();

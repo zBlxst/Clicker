@@ -10,7 +10,7 @@ class Upgrade {
 public:
     enum TYPES {
         BUILDING,
-        CLICK,
+        MISC,
         N_ITEMS
     };
 

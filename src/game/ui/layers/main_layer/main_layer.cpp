@@ -35,10 +35,10 @@ MainLayer::MainLayer(WindowManager& window_manager) :
     }
 
     // Initialisation of click upgrades
-    for (std::shared_ptr<Upgrade> c_up: m_window_manager.get_game_manager().get_all_upgrades()[Upgrade::TYPES::CLICK]) {
+    for (std::shared_ptr<Upgrade> c_up: m_window_manager.get_game_manager().get_all_upgrades()[Upgrade::TYPES::MISC]) {
         std::shared_ptr<UpgradeButton> click_upgrade_button = std::make_shared<UpgradeButton>(c_up, window_manager);
         m_all_buttons.push_back(click_upgrade_button);
-        m_all_upgrade_buttons[Upgrade::TYPES::CLICK].push_back(click_upgrade_button);
+        m_all_upgrade_buttons[Upgrade::TYPES::MISC].push_back(click_upgrade_button);
     }
 }
 

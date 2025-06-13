@@ -45,8 +45,9 @@ void WindowManager::start() {
         m_window.clear();
         m_all_layers.back()->display();
         std::string money_text = std::format("Money {}", (int)m_game_manager.get_money());
-        std::string gain_text = std::format("Gain {}/s", (int)m_game_manager.get_stat_tracker().m_last_second_gain);
-        std::vector<std::string> to_print = {money_text, gain_text};
+        std::string gain_text = std::format("Gain {}/s", (int)m_game_manager.get_prod());
+        std::string click_gain_text = std::format("Click gain {}", (int)m_game_manager.get_click_gain());
+        std::vector<std::string> to_print = {money_text, gain_text, click_gain_text};
         draw_text(to_print, 0, 0, 15, WHITE);
         m_window.display();
     }

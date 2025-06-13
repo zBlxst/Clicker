@@ -4,9 +4,13 @@
 #include "building.hpp"
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
+#include "upgrades/money_upgrade.hpp"
 
 #include <unistd.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
+
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
@@ -15,6 +19,9 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_all_upgrades(),
     m_buildings_thread(&GameManager::gain_function_for_thread, this),
     m_click_additive_upgrade(0),
+    m_click_multiplicative_upgrade(1),
+    m_money_multiplicative_upgrade(1),
+    m_click_percent_of_total_prod(0),
     m_running(false) {
         int n_upgrade;
         // Initialisation of upgrades vectors
@@ -37,16 +44,33 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             }    
         }
 
-        // Initialisation of click upgrades
+        // Initialisation of misc upgrades
         n_upgrade = 0;
         for (int i = 0; i < ClickUpgrade::N_UPGRADES; i++) {
             std::shared_ptr<ClickUpgrade> c_up = std::make_shared<ClickUpgrade>(i, n_upgrade++, std::ref(*this));
-            m_all_upgrades[Upgrade::TYPES::CLICK].push_back(c_up);
+            m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
+        }
+        for (int i = 0; i < MoneyUpgrade::N_UPGRADES; i++) {
+            std::shared_ptr<MoneyUpgrade> c_up = std::make_shared<MoneyUpgrade>(i, n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
         }
 }
 
 void GameManager::add_click_additive_upgrade(double amount) {
     m_click_additive_upgrade += amount;
+}
+
+void GameManager::add_click_multiplicative_upgrade(double amount) {
+    m_click_multiplicative_upgrade *= amount;
+}
+
+
+void GameManager::add_money_multiplicative_upgrade(double amount) {
+    m_money_multiplicative_upgrade *= amount;
+}
+
+void GameManager::add_click_percent_of_prod(double amount) {
+    m_click_percent_of_total_prod += amount;
 }
 
 double GameManager::get_money() {
@@ -56,22 +80,37 @@ double GameManager::get_money() {
 void GameManager::click() {
     m_stat_tracker.m_clicks++;
     std::cout << "Clicks : " << m_stat_tracker.m_clicks << std::endl;
-    m_money += (1+m_click_additive_upgrade);
+    double gain = get_click_gain();
+    m_money += gain;
+    m_stat_tracker.m_click_gain += gain; 
+}
+
+double GameManager::get_prod() {
+    double prod = 0;
+    for (std::shared_ptr<Building> building: get_all_buildings()) {
+        prod += building->get_gain();
+    }
+    return prod;
+}
+
+double GameManager::get_click_gain() {
+    return (1+m_click_additive_upgrade)*m_click_multiplicative_upgrade + m_click_percent_of_total_prod*get_prod();
+
 }
 
 std::vector<std::shared_ptr<Building>>& GameManager::get_all_buildings() {
     return m_all_buildings;
 }
 
+
 std::vector<std::vector<std::shared_ptr<Upgrade>>>& GameManager::get_all_upgrades() {
     return m_all_upgrades;
 }
 
 void GameManager::add_money(double amount) {
-    m_money += amount;
-    if (m_money < 0) {
-        exit(1);
-    }
+    double gain = amount*m_money_multiplicative_upgrade;
+    m_money += gain;
+    m_stat_tracker.m_total_gain += gain;
 }
 
 void GameManager::set_money(double value) {
@@ -95,13 +134,9 @@ void GameManager::gain_function_for_thread() {
     // Wait for the game_manager to run
     while (!m_running) {}
     while (m_running) {
-        double last_second_gain = 0;
-        for (std::shared_ptr<Building> building: get_all_buildings()) {
-            add_money(building->get_gain());
-            last_second_gain += building->get_gain();
-        }
-        m_stat_tracker.m_last_second_gain = last_second_gain;
-        sleep(1);
+        add_money(get_prod() / 2);
+        m_stat_tracker.m_last_second_gain = get_prod();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));;
     }
 }
 
