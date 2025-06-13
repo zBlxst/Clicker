@@ -11,7 +11,7 @@ ClickButton::ClickButton(WindowManager& window_manager) :
     m_game_manager(window_manager.get_game_manager()) {}
 
 void ClickButton::callback() {
-    m_game_manager.click();
+    m_game_manager.click(true);
 }
 
 void ClickButton::display() {}

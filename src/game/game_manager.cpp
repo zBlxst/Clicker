@@ -18,10 +18,12 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_all_buildings(),
     m_all_upgrades(),
     m_buildings_thread(&GameManager::gain_function_for_thread, this),
+    m_assistants_thread(&GameManager::assistant_function_for_thread, this),
     m_click_additive_upgrade(0),
     m_click_multiplicative_upgrade(1),
     m_money_multiplicative_upgrade(1),
-    m_click_percent_of_total_prod(0),
+    m_click_percent_of_building_prod(0),
+    m_assistants(0),
     m_running(false) {
         int n_upgrade;
         // Initialisation of upgrades vectors
@@ -70,22 +72,39 @@ void GameManager::add_money_multiplicative_upgrade(double amount) {
 }
 
 void GameManager::add_click_percent_of_prod(double amount) {
-    m_click_percent_of_total_prod += amount;
+    m_click_percent_of_building_prod += amount;
 }
+
+void GameManager::add_assistants(int amount) {
+    m_assistants += amount;
+}
+
 
 double GameManager::get_money() {
     return m_money;
 }
 
-void GameManager::click() {
+void GameManager::click(bool manual) {
     m_stat_tracker.m_clicks++;
     std::cout << "Clicks : " << m_stat_tracker.m_clicks << std::endl;
-    double gain = get_click_gain();
+    double gain;
+    if (manual) {
+        gain = get_click_gain();
+    } else {
+        gain = get_assistant_money_gain();;
+    }
     m_money += gain;
     m_stat_tracker.m_click_gain += gain; 
 }
 
 double GameManager::get_prod() {
+    double prod = 0;
+    prod += get_building_prod();
+    prod += get_assistant_money_gain()*get_assistants();
+    return prod;
+}
+
+double GameManager::get_building_prod() {
     double prod = 0;
     for (std::shared_ptr<Building> building: get_all_buildings()) {
         prod += building->get_gain();
@@ -93,9 +112,18 @@ double GameManager::get_prod() {
     return prod;
 }
 
-double GameManager::get_click_gain() {
-    return (1+m_click_additive_upgrade)*m_click_multiplicative_upgrade + m_click_percent_of_total_prod*get_prod();
 
+
+double GameManager::get_click_gain() {
+    return (1+m_click_additive_upgrade)*m_click_multiplicative_upgrade + m_click_percent_of_building_prod*get_building_prod();
+}
+
+double GameManager::get_assistant_money_gain() {
+    return get_click_gain()*0.05;
+}
+
+int GameManager::get_assistants() {
+    return m_assistants;
 }
 
 std::vector<std::shared_ptr<Building>>& GameManager::get_all_buildings() {
@@ -140,6 +168,17 @@ void GameManager::gain_function_for_thread() {
     }
 }
 
+void GameManager::assistant_function_for_thread() {
+    // Wait for the game_manager to run
+    while (!m_running) {}
+    while (m_running) {
+        for (int i = 0; i < get_assistants(); i++) {
+            click(false);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));;
+    }
+}
+
 void GameManager::start() {
     m_running = true;
 }
@@ -148,6 +187,7 @@ void GameManager::start() {
 void GameManager::stop() {
     m_running = false;
     m_buildings_thread.join();
+    m_assistants_thread.join();
 }
 
 StatTracker& GameManager::get_stat_tracker() {

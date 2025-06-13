@@ -23,6 +23,9 @@ double BuildingUpgrade::get_cost() {
 
 void BuildingUpgrade::buy_callback() {
     m_game_manager.get_all_buildings()[m_building_index]->m_multiplicative_buff *= get_buff();
+    if (m_upgrade_index < 2) {
+        m_game_manager.add_assistants(1);
+    }
 }
 
 std::vector<std::string> BuildingUpgrade::get_base_text_to_display() {

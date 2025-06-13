@@ -21,9 +21,7 @@ bool Button::catched_click(unsigned int x, unsigned int y) {
     return false;
 }
 
-void Button::callback() {
-    m_window_manager.get_game_manager().click();
-}
+void Button::callback() {}
 
 void Button::display() {
     m_window_manager.draw_rect(m_x, m_y, m_width, m_height);
