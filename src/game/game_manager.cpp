@@ -20,9 +20,9 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_all_buildings(),
     m_all_upgrades(),
     m_all_spells(Spell::get_one_of_each(std::ref(*this))),
-    m_buildings_thread(&GameManager::money_gain_function_for_thread, this),
-    m_assistants_thread(&GameManager::assistant_function_for_thread, this),
-    m_mana_regen_thread(&GameManager::mana_gain_function_for_thread, this),
+    m_buildings_thread(std::make_shared<std::thread>(&GameManager::money_gain_function_for_thread, this)),
+    m_assistants_thread(std::make_shared<std::thread>(&GameManager::assistant_function_for_thread, this)),
+    m_mana_regen_thread(std::make_shared<std::thread>(&GameManager::mana_gain_function_for_thread, this)),
     m_money_multiplicative_upgrade(1),
     m_click_additive_upgrade(0),
     m_click_multiplicative_upgrade(1),
@@ -64,7 +64,12 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         for (int i = 0; i < MoneyUpgrade::N_UPGRADES; i++) {
             std::shared_ptr<MoneyUpgrade> c_up = std::make_shared<MoneyUpgrade>(i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
-        }        
+        }
+
+        // Put threads in all_threads
+        add_thread(m_buildings_thread);
+        add_thread(m_assistants_thread);
+        add_thread(m_mana_regen_thread);
 }
 
 void GameManager::add_click_additive_upgrade(double amount) {
@@ -258,9 +263,11 @@ void GameManager::start() {
 
 void GameManager::stop() {
     m_running = false;
-    m_buildings_thread.join();
-    m_assistants_thread.join();
-    m_mana_regen_thread.join();
+    for (std::shared_ptr<std::thread> thread : m_all_threads) {
+        if (thread->joinable()) {
+            thread->join();
+        }
+    }
 }
 
 bool GameManager::is_running() {
@@ -269,4 +276,8 @@ bool GameManager::is_running() {
 
 StatTracker& GameManager::get_stat_tracker() {
     return m_stat_tracker;
+}
+
+void GameManager::add_thread(std::shared_ptr<std::thread> thread) {
+    m_all_threads.push_back(thread);
 }

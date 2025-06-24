@@ -7,7 +7,9 @@
 
 SpellCallToArmy::SpellCallToArmy(int index, GameManager& game_manager) : 
     Spell(BASE_COST, index, game_manager),
-    m_thread(std::thread(&SpellCallToArmy::thread_function, this)) {}
+    m_thread(std::make_shared<std::thread>(&SpellCallToArmy::thread_function, this)) {
+        m_game_manager.add_thread(m_thread);
+    }
 
 void SpellCallToArmy::thread_function() {
     while (m_game_manager.is_running()) {
@@ -15,9 +17,14 @@ void SpellCallToArmy::thread_function() {
             sleep(1);
         }
         m_game_manager.add_money_multiplicative_upgrade(BASE_BOOST);
-        sleep(BASE_TIME);
-        m_game_manager.add_money_multiplicative_upgrade(1/BASE_BOOST);
+        for (int i = 0; i < BASE_TIME; i++) {
+            sleep(1);
+            if (!m_game_manager.is_running()) {
+                return;
+            }
+        }
         m_running = false;
+        m_game_manager.add_money_multiplicative_upgrade(1/BASE_BOOST);
     }
 }
 

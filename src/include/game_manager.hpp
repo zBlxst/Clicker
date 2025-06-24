@@ -20,13 +20,15 @@ private:
     double m_money;
     double m_mana;
 
+    std::vector<std::shared_ptr<std::thread>> m_all_threads;
+
     std::vector<std::shared_ptr<Building>> m_all_buildings;
     std::vector<std::vector<std::shared_ptr<Upgrade>>> m_all_upgrades;
     std::vector<std::shared_ptr<Spell>> m_all_spells;
 
-    std::thread m_buildings_thread;
-    std::thread m_assistants_thread;
-    std::thread m_mana_regen_thread;
+    std::shared_ptr<std::thread> m_buildings_thread;
+    std::shared_ptr<std::thread> m_assistants_thread;
+    std::shared_ptr<std::thread> m_mana_regen_thread;
 
     // Boosts
     double m_money_multiplicative_upgrade;
@@ -93,5 +95,7 @@ public:
     std::vector<std::shared_ptr<Spell>>& get_all_spells();
 
     StatTracker& get_stat_tracker();
+
+    void add_thread(std::shared_ptr<std::thread> thread);
 
 };
