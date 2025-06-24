@@ -46,9 +46,11 @@ void WindowManager::start() {
         m_all_layers.back()->display();
         std::string money_text = std::format("Money {}", (int)m_game_manager.get_money());
         std::string gain_text = std::format("Gain {}/s", (int)m_game_manager.get_prod());
+        std::string total_clicks_text = std::format("Total clicks {}", (int)m_game_manager.get_stat_tracker().m_clicks);
         std::string click_gain_text = std::format("Click gain {}", (int)m_game_manager.get_click_gain());
         std::string assistants_text = std::format("Assistants {}", (int)m_game_manager.get_assistants());
-        std::vector<std::string> to_print = {money_text, gain_text, click_gain_text, assistants_text};
+        std::string mana_text = std::format("Mana {} / {}", (int)m_game_manager.get_mana(), (int)m_game_manager.get_mana_max());
+        std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text};
         draw_text(to_print, 0, 0, 15, WHITE);
         m_window.display();
     }

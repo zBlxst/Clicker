@@ -49,6 +49,8 @@ void SaveManager::load_misc_save() {
 
         if (type == "Gold") {
             m_game_manager.set_money(std::stod(value));
+        } else if (type == "Mana") {
+            m_game_manager.set_mana(std::stod(value));
         } else if (type == "Building") {
             load_building(object, value);
         } else if (type == "BuildingUpgrade") {
@@ -66,6 +68,7 @@ void SaveManager::load_misc_save() {
 void SaveManager::store_misc_save() {
     std::ofstream file_stream(m_misc_file_name);
     file_stream << std::format("Gold : () -> {}\n", m_game_manager.get_money());
+    file_stream << std::format("Mana : () -> {}\n", m_game_manager.get_mana());
     
     // Buildings
     for (std::shared_ptr<Building> building: m_game_manager.get_all_buildings()) {

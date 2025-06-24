@@ -2,6 +2,7 @@
 #include "ui/layers/main_layer/click_button.hpp"
 #include "ui/layers/main_layer/upgrade_button.hpp"
 #include "ui/layers/main_layer/building_button.hpp"
+#include "ui/layers/main_layer/spell_button.hpp"
 
 #include "building.hpp"
 #include "building_upgrade.hpp"
@@ -40,10 +41,21 @@ MainLayer::MainLayer(WindowManager& window_manager) :
         m_all_buttons.push_back(click_upgrade_button);
         m_all_upgrade_buttons[Upgrade::TYPES::MISC].push_back(click_upgrade_button);
     }
+
+    // Initialisation of spells
+    for (std::shared_ptr<Spell> spell: m_window_manager.get_game_manager().get_all_spells()) {
+        std::shared_ptr<SpellButton> spell_button = std::make_shared<SpellButton>(spell, window_manager);
+        m_all_buttons.push_back(spell_button);
+        m_all_spell_buttons.push_back(spell_button);
+    }
+
+    
 }
 
 void MainLayer::display() {
     int available_building_upgrades = 0;
+    int available_spell = 0;
+
     for (int i = 0; i < Upgrade::TYPES::N_ITEMS; i++) {
         for (std::shared_ptr<UpgradeButton> b_up_button: m_all_upgrade_buttons[i]) {
             if (b_up_button->m_upgrade->is_available()) {
@@ -51,5 +63,12 @@ void MainLayer::display() {
             }
         }
     }
+
+    for (std::shared_ptr<SpellButton> s_button: m_all_spell_buttons) {
+        if (s_button->m_spell->is_available()) {
+            s_button->update_ui_index(available_spell++);
+        }
+    }
+
     Layer::display();
 }

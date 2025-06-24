@@ -1,6 +1,7 @@
 #include "game_manager.hpp"
 
 #include "upgrades/upgrade.hpp"
+#include "spells/spell.hpp"
 #include "building.hpp"
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
@@ -14,18 +15,26 @@
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
-    m_money(3000),
+    m_money(0),
+    m_mana(500),
     m_all_buildings(),
     m_all_upgrades(),
-    m_buildings_thread(&GameManager::gain_function_for_thread, this),
+    m_all_spells(Spell::get_one_of_each(std::ref(*this))),
+    m_buildings_thread(&GameManager::money_gain_function_for_thread, this),
     m_assistants_thread(&GameManager::assistant_function_for_thread, this),
+    m_mana_regen_thread(&GameManager::mana_gain_function_for_thread, this),
+    m_money_multiplicative_upgrade(1),
     m_click_additive_upgrade(0),
     m_click_multiplicative_upgrade(1),
-    m_money_multiplicative_upgrade(1),
     m_click_percent_of_building_prod(0),
+    m_mana_regen_additive_upgrade(0),
+    m_mana_regen_multiplicative_upgrade(1),
+    m_mana_max_additive_upgrade(0),
+    m_mana_max_multiplicative_upgrade(1),
     m_assistants(0),
     m_running(false) {
         int n_upgrade;
+        int n_spell;
         // Initialisation of upgrades vectors
         for (int i = 0; i < Upgrade::TYPES::N_ITEMS; i++) {
             m_all_upgrades.push_back(std::vector<std::shared_ptr<Upgrade>>());
@@ -55,7 +64,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         for (int i = 0; i < MoneyUpgrade::N_UPGRADES; i++) {
             std::shared_ptr<MoneyUpgrade> c_up = std::make_shared<MoneyUpgrade>(i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
-        }
+        }        
 }
 
 void GameManager::add_click_additive_upgrade(double amount) {
@@ -64,6 +73,22 @@ void GameManager::add_click_additive_upgrade(double amount) {
 
 void GameManager::add_click_multiplicative_upgrade(double amount) {
     m_click_multiplicative_upgrade *= amount;
+}
+
+void GameManager::add_mana_regen_additive_upgrade(double amount) {
+    m_mana_regen_additive_upgrade += amount;
+}
+
+void GameManager::add_mana_regen_multiplicative_upgrade(double amount) {
+    m_mana_regen_multiplicative_upgrade *= amount;
+}
+
+void GameManager::add_mana_max_additive_upgrade(double amount) {
+    m_mana_max_additive_upgrade += amount;
+}
+
+void GameManager::add_mana_max_multiplicative_upgrade(double amount) {
+    m_mana_max_multiplicative_upgrade *= amount;
 }
 
 
@@ -86,7 +111,6 @@ double GameManager::get_money() {
 
 void GameManager::click(bool manual) {
     m_stat_tracker.m_clicks++;
-    std::cout << "Clicks : " << m_stat_tracker.m_clicks << std::endl;
     double gain;
     if (manual) {
         gain = get_click_gain();
@@ -101,7 +125,7 @@ double GameManager::get_prod() {
     double prod = 0;
     prod += get_building_prod();
     prod += get_assistant_money_gain()*get_assistants();
-    return prod;
+    return prod*m_money_multiplicative_upgrade;
 }
 
 double GameManager::get_building_prod() {
@@ -122,6 +146,19 @@ double GameManager::get_assistant_money_gain() {
     return get_click_gain()*0.05;
 }
 
+double GameManager::get_mana() {
+    return m_mana;
+}
+
+double GameManager::get_mana_max() {
+    return (DEFAULT_MANA_MAX+m_mana_max_additive_upgrade)*m_mana_max_multiplicative_upgrade;
+}
+
+
+double GameManager::get_mana_regen() {
+    return (1+m_mana_regen_additive_upgrade)*m_mana_regen_multiplicative_upgrade;
+}
+
 int GameManager::get_assistants() {
     return m_assistants;
 }
@@ -135,8 +172,13 @@ std::vector<std::vector<std::shared_ptr<Upgrade>>>& GameManager::get_all_upgrade
     return m_all_upgrades;
 }
 
+std::vector<std::shared_ptr<Spell>>& GameManager::get_all_spells() {
+    return m_all_spells;
+}
+
+
 void GameManager::add_money(double amount) {
-    double gain = amount*m_money_multiplicative_upgrade;
+    double gain = amount;
     m_money += gain;
     m_stat_tracker.m_total_gain += gain;
 }
@@ -157,8 +199,29 @@ bool GameManager::buy(double cost) {
     return true;
 }
 
+void GameManager::add_mana(double amount) {
+    double gain = amount;
+    if (gain >= get_mana_max() - get_mana()) 
+        gain = get_mana_max() - get_mana();
+    m_mana += gain;
+    // m_stat_tracker.m_total_gain += gain;
+}
 
-void GameManager::gain_function_for_thread() {
+void GameManager::set_mana(double value) {
+    m_mana = value;
+}
+
+
+bool GameManager::cast_spell(double cost) {
+    if (m_mana < cost) {
+        return false;
+    }
+    m_mana -= cost;
+    return true;
+}
+
+
+void GameManager::money_gain_function_for_thread() {
     // Wait for the game_manager to run
     while (!m_running) {}
     while (m_running) {
@@ -179,6 +242,15 @@ void GameManager::assistant_function_for_thread() {
     }
 }
 
+void GameManager::mana_gain_function_for_thread() {
+    // Wait for the game_manager to run
+    while (!m_running) {}
+    while (m_running) {
+        add_mana(get_mana_regen() / 3);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000/3));;
+    }
+}
+
 void GameManager::start() {
     m_running = true;
 }
@@ -188,6 +260,11 @@ void GameManager::stop() {
     m_running = false;
     m_buildings_thread.join();
     m_assistants_thread.join();
+    m_mana_regen_thread.join();
+}
+
+bool GameManager::is_running() {
+    return m_running;
 }
 
 StatTracker& GameManager::get_stat_tracker() {
