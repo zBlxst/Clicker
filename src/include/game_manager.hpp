@@ -9,6 +9,7 @@
 class Building;
 class Upgrade;
 class Spell;
+class Achievement;
 
 class GameManager {
 public:
@@ -25,10 +26,13 @@ private:
     std::vector<std::shared_ptr<Building>> m_all_buildings;
     std::vector<std::vector<std::shared_ptr<Upgrade>>> m_all_upgrades;
     std::vector<std::shared_ptr<Spell>> m_all_spells;
+    std::vector<std::shared_ptr<Achievement>> m_all_achievements;
+    
 
     std::shared_ptr<std::thread> m_buildings_thread;
     std::shared_ptr<std::thread> m_assistants_thread;
     std::shared_ptr<std::thread> m_mana_regen_thread;
+    std::shared_ptr<std::thread> m_achievement_thread;
 
     // Boosts
     double m_money_multiplicative_upgrade;
@@ -51,6 +55,7 @@ private:
     void money_gain_function_for_thread();
     void mana_gain_function_for_thread();
     void assistant_function_for_thread();
+    void achievement_function_for_thread();
 
 public:
     GameManager(StatTracker& stat_tracker);

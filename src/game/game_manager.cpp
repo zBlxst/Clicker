@@ -6,6 +6,7 @@
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
+#include "achievements/achievement.hpp"
 
 #include <unistd.h>
 #include <iostream>
@@ -20,9 +21,11 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_all_buildings(),
     m_all_upgrades(),
     m_all_spells(Spell::get_one_of_each(std::ref(*this))),
+    m_all_achievements(Achievement::get_all_achievements(std::ref(*this))),
     m_buildings_thread(std::make_shared<std::thread>(&GameManager::money_gain_function_for_thread, this)),
     m_assistants_thread(std::make_shared<std::thread>(&GameManager::assistant_function_for_thread, this)),
     m_mana_regen_thread(std::make_shared<std::thread>(&GameManager::mana_gain_function_for_thread, this)),
+    m_achievement_thread(std::make_shared<std::thread>(&GameManager::achievement_function_for_thread, this)),
     m_money_multiplicative_upgrade(1),
     m_click_additive_upgrade(0),
     m_click_multiplicative_upgrade(1),
@@ -70,6 +73,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         add_thread(m_buildings_thread);
         add_thread(m_assistants_thread);
         add_thread(m_mana_regen_thread);
+        add_thread(m_achievement_thread);
 }
 
 void GameManager::add_click_additive_upgrade(double amount) {
@@ -232,7 +236,7 @@ void GameManager::money_gain_function_for_thread() {
     while (m_running) {
         add_money(get_prod() / 2);
         m_stat_tracker.m_last_second_gain = get_prod();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
@@ -243,7 +247,7 @@ void GameManager::assistant_function_for_thread() {
         for (int i = 0; i < get_assistants(); i++) {
             click(false);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -252,7 +256,18 @@ void GameManager::mana_gain_function_for_thread() {
     while (!m_running) {}
     while (m_running) {
         add_mana(get_mana_regen() / 3);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000/3));;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000/3));
+    }
+}
+
+void GameManager::achievement_function_for_thread() {
+    // Wait for the game_manager to run
+    while (!m_running) {}
+    while (m_running) {
+        for (std::shared_ptr<Achievement> achievement : m_all_achievements) {
+            achievement->update();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
