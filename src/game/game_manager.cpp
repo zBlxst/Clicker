@@ -6,7 +6,7 @@
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
-#include "achievements/achievement.hpp"
+#include "achievement.hpp"
 
 #include <unistd.h>
 #include <iostream>
