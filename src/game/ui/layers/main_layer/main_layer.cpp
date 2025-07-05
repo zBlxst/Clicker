@@ -28,6 +28,13 @@ MainLayer::MainLayer(WindowManager& window_manager) :
         m_all_buttons.push_back(building_button);
     }
 
+    // Initialisation of morality upgrades
+    for (std::shared_ptr<Upgrade> m_up: m_window_manager.get_game_manager().get_all_upgrades()[Upgrade::TYPES::FACTION]) {
+        std::shared_ptr<UpgradeButton> faction_upgrade_button = std::make_shared<UpgradeButton>(m_up, window_manager);
+        m_all_buttons.push_back(faction_upgrade_button);
+        m_all_upgrade_buttons[Upgrade::TYPES::FACTION].push_back(faction_upgrade_button);
+    }
+
     // Initialisation of buildings upgrades
     for (std::shared_ptr<Upgrade> b_up: m_window_manager.get_game_manager().get_all_upgrades()[Upgrade::TYPES::BUILDING]) {
         std::shared_ptr<UpgradeButton> building_upgrade_button = std::make_shared<UpgradeButton>(b_up, window_manager);

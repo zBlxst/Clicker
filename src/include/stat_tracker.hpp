@@ -13,6 +13,7 @@ public:
     double m_last_second_gain;
     double m_click_gain;
     double m_total_gain;
+    int m_n_achievements;
 
     StatTracker(std::string file_name);
     StatTracker();

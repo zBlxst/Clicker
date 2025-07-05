@@ -9,8 +9,8 @@ class SpellCallToArmy : public Spell {
 
 public:
     static constexpr double BASE_COST = 200;
-    static constexpr int BASE_TIME = 10;
-    static constexpr double BASE_BOOST = 2;
+    static constexpr int BASE_MAX_TIME = 30;
+    static constexpr double BOOST_PER_BUILDING = 2;
 
 private:
     void thread_function();
@@ -19,5 +19,6 @@ private:
 public:
     SpellCallToArmy(int index, GameManager& game_manager);
     void callback();
+    double get_buff();
 
 };

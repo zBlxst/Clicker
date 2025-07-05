@@ -15,7 +15,14 @@ void BuildingButton::callback() {
     m_game_manager.get_all_buildings()[m_index]->level_up();
 }
 
+bool BuildingButton::should_catch_click() {
+    return m_game_manager.get_all_buildings()[m_index]->is_available();
+}
+
 void BuildingButton::display() {
+    if(!m_game_manager.get_all_buildings()[m_index]->is_available()) {
+        return;
+    }
     Button::display();
     std::vector<std::string> to_write = {   std::format("Level : {}", std::round(m_game_manager.get_all_buildings()[m_index]->get_level())),
                                             std::format("Cost : {}", std::round(m_game_manager.get_all_buildings()[m_index]->get_cost())),

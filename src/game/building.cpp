@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "faction.hpp"
 #include "game_manager.hpp"
 
 Building::Building(int index, GameManager& game_manager) : 
@@ -25,7 +26,11 @@ void Building::level_up() {
 }
 
 double Building::get_gain() {
-    return BASE_PRODS[m_index]*m_level*m_multiplicative_buff;
+    if (m_index <= 10) {
+        return BASE_PRODS[m_index]*m_level*m_multiplicative_buff;
+    } else {
+        return BASE_PRODS[m_index]*m_level*m_game_manager.get_stat_tracker().m_n_achievements;
+    }
 }
 
 int Building::get_index() {
@@ -34,4 +39,11 @@ int Building::get_index() {
 
 void Building::set_level(int value) {
     m_level = value;
+}
+
+bool Building::is_available() {
+    if (m_index <= 2) {
+        return true;
+    }
+    return m_game_manager.get_morality() != Faction::MORALITY::NONE;
 }

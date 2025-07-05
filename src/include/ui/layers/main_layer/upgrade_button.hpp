@@ -25,7 +25,7 @@ private:
 public:
     const std::shared_ptr<Upgrade> m_upgrade;
     
-    UpgradeButton(  std::shared_ptr<Upgrade> upgrade, WindowManager& window_manager);
+    UpgradeButton(std::shared_ptr<Upgrade> upgrade, WindowManager& window_manager);
     void callback();
     void display();
     void update_ui_index(int index);

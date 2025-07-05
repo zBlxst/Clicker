@@ -5,6 +5,8 @@
 #include <thread>
 
 #include "stat_tracker.hpp"
+#include "faction.hpp"
+
 
 class Building;
 class Upgrade;
@@ -48,6 +50,7 @@ private:
 
 
     int m_assistants;
+    Faction::MORALITY m_morality;
 
 
     bool m_running;
@@ -92,6 +95,10 @@ public:
     double get_mana_max();
     double get_mana_regen();
     int get_assistants();
+    int get_all_buildings_level();
+
+    Faction::MORALITY get_morality();
+    void set_morality(Faction::MORALITY morality);
 
     bool is_running();
 

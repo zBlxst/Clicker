@@ -19,5 +19,6 @@ private:
 public:
     BuildingButton(int index, WindowManager& window_manager);
     void callback();
+    bool should_catch_click();
     void display();
 };

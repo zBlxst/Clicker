@@ -15,16 +15,21 @@ protected:
     int m_index;
     bool m_running;
 
+    int m_max_time;
+    int m_remaining_time;
 public:
-    Spell(double cost, int index, GameManager& game_manager);
+    Spell(double cost, int index, GameManager& game_manager, int max_time);
     static std::vector<std::shared_ptr<Spell>> get_one_of_each(GameManager& game_manager);
     
     void cast();
     void set_mana(double value);
     double get_cost();
 
-    
 
+    virtual double get_buff() = 0;
+
+    int get_max_time();
+    int get_remaining_time();
 
     virtual void callback() = 0;
     bool is_available() {return true;};

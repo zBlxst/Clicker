@@ -6,6 +6,7 @@
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
+#include "upgrades/morality_upgrade.hpp"
 #include "achievement.hpp"
 
 #include <unistd.h>
@@ -35,6 +36,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_mana_max_additive_upgrade(0),
     m_mana_max_multiplicative_upgrade(1),
     m_assistants(0),
+    m_morality(Faction::NONE),
     m_running(false) {
         int n_upgrade;
         int n_spell;
@@ -47,6 +49,13 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         for (int i = 0; i < Building::N_BUILDINGS; i++) {
             std::shared_ptr<Building> b = std::make_shared<Building>(i, std::ref(*this));
             m_all_buildings.push_back(b);
+        }
+
+        // Initialisation of morality upgrades
+        n_upgrade = 0;
+        for (int i = 0; i < Faction::N_MORALITIES; i++) {
+            std::shared_ptr<MoralityUpgrade> m_up = std::make_shared<MoralityUpgrade>(n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::FACTION].push_back(m_up);
         }
 
         // Initialisation of building upgrades
@@ -172,6 +181,13 @@ int GameManager::get_assistants() {
     return m_assistants;
 }
 
+int GameManager::get_all_buildings_level() {
+    int res = 0;
+    for (std::shared_ptr<Building> building : get_all_buildings()) {
+        res += building->get_level();
+    }
+    return res;
+}
 std::vector<std::shared_ptr<Building>>& GameManager::get_all_buildings() {
     return m_all_buildings;
 }
@@ -269,6 +285,14 @@ void GameManager::achievement_function_for_thread() {
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+}
+
+Faction::MORALITY GameManager::get_morality() {
+    return m_morality;
+}
+
+void GameManager::set_morality(Faction::MORALITY morality) {
+    m_morality = morality;
 }
 
 void GameManager::start() {

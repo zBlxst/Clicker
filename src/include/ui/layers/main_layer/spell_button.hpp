@@ -6,7 +6,7 @@
 class SpellButton : public Button {
     
 private:
-    static constexpr unsigned int BASE_POS_X = 500;
+    static constexpr unsigned int BASE_POS_X = 700;
     static constexpr unsigned int BASE_POS_Y = 130;
     static constexpr unsigned int WIDTH = 100;
     static constexpr unsigned int HEIGHT = 100;

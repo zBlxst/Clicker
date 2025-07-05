@@ -9,6 +9,7 @@ class Upgrade {
 
 public:
     enum TYPES {
+        FACTION,
         BUILDING,
         MISC,
         N_ITEMS

@@ -5,10 +5,11 @@
 #include "spells/spell_tax.hpp"
 #include "spells/spell_call_to_army.hpp"
 
-Spell::Spell(double cost, int index, GameManager& game_manager) :
+Spell::Spell(double cost, int index, GameManager& game_manager, int max_time) :
     m_cost(cost),
     m_index(index),
     m_running(false),
+    m_max_time(max_time),
     m_game_manager(game_manager) {}
 
 void Spell::cast() {
@@ -37,3 +38,10 @@ std::vector<std::shared_ptr<Spell>> Spell::get_one_of_each(GameManager& game_man
     };
 }
 
+int Spell::get_max_time() {
+    return m_max_time;
+}
+
+int Spell::get_remaining_time() {
+    return m_remaining_time;
+}
