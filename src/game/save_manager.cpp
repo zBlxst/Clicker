@@ -53,6 +53,8 @@ void SaveManager::load_misc_save() {
             m_game_manager.set_mana(std::stod(value));
         } else if (type == "Building") {
             load_building(object, value);
+        } else if (type == "FactionUpgrade") {
+            load_upgrade(object, value, Upgrade::TYPES::FACTION);
         } else if (type == "BuildingUpgrade") {
             load_upgrade(object, value, Upgrade::TYPES::BUILDING);
         } else if (type == "MiscUpgrade") {
@@ -75,16 +77,22 @@ void SaveManager::store_misc_save() {
         file_stream << std::format("Building : {} -> {}\n", building->get_index(), building->get_level());
     }
 
+    // Misc upgrades
+    for (std::shared_ptr<Upgrade> f_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::FACTION]) {
+        file_stream << std::format("FactionUpgrade : {} -> {}\n", f_up->m_index_in_gm, f_up->is_bought());
+    }
+
     // Building upgrades
     for (std::shared_ptr<Upgrade> b_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::BUILDING]) {
         file_stream << std::format("BuildingUpgrade : {} -> {}\n", b_up->m_index_in_gm, b_up->is_bought());
     }
 
-    // Click upgrades
+    // Misc upgrades
     for (std::shared_ptr<Upgrade> b_up: m_game_manager.get_all_upgrades()[Upgrade::TYPES::MISC]) {
         file_stream << std::format("MiscUpgrade : {} -> {}\n", b_up->m_index_in_gm, b_up->is_bought());
     }
-    
+
+
     file_stream.close();
 }
 
