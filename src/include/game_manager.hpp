@@ -16,12 +16,14 @@ class Achievement;
 class GameManager {
 public:
     static constexpr double DEFAULT_MANA_MAX = 1000;
+    static constexpr double DEFAULT_FACTION_COIN_CHANCE = 0.1;
 
 private:
     StatTracker& m_stat_tracker;
 
     double m_money;
     double m_mana;
+    double m_faction_coins[Faction::FACTION_COINS::N_FACTIONS_COINS];
 
     std::vector<std::shared_ptr<std::thread>> m_all_threads;
 
@@ -48,6 +50,9 @@ private:
     double m_mana_max_additive_upgrade;
     double m_mana_max_multiplicative_upgrade;
 
+    double m_faction_coin_additive_upgrade;
+    double m_faction_coin_multiplicative_upgrade;
+
 
     int m_assistants;
     Faction::MORALITY m_morality;
@@ -71,6 +76,10 @@ public:
     void add_money(double amount);
     void set_money(double value);
     bool buy(double cost);
+
+    double get_faction_coin(Faction::FACTION_COINS faction);
+    void add_faction_coin(double chance);
+    void set_faction_coin(Faction::FACTION_COINS faction, double chance);
     
     void add_mana(double amount);
     void set_mana(double value);
@@ -91,11 +100,13 @@ public:
     double get_building_prod();
     double get_click_gain();
     double get_assistant_money_gain();
+    double get_assistant_faction_coin_chance();
     double get_mana();
     double get_mana_max();
     double get_mana_regen();
     int get_assistants();
     int get_all_buildings_level();
+    double get_faction_coin_chance();
 
     Faction::MORALITY get_morality();
     void set_morality(Faction::MORALITY morality);

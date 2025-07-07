@@ -13,12 +13,15 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <cstdlib>
+#include <cmath>
 
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
     m_money(0),
-    m_mana(500),
+    m_mana(DEFAULT_MANA_MAX),
+    m_faction_coins({}),
     m_all_buildings(),
     m_all_upgrades(),
     m_all_spells(Spell::get_one_of_each(std::ref(*this))),
@@ -27,6 +30,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_assistants_thread(std::make_shared<std::thread>(&GameManager::assistant_function_for_thread, this)),
     m_mana_regen_thread(std::make_shared<std::thread>(&GameManager::mana_gain_function_for_thread, this)),
     m_achievement_thread(std::make_shared<std::thread>(&GameManager::achievement_function_for_thread, this)),
+    
     m_money_multiplicative_upgrade(1),
     m_click_additive_upgrade(0),
     m_click_multiplicative_upgrade(1),
@@ -35,9 +39,14 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_mana_regen_multiplicative_upgrade(1),
     m_mana_max_additive_upgrade(0),
     m_mana_max_multiplicative_upgrade(1),
+    m_faction_coin_additive_upgrade(0),
+    m_faction_coin_multiplicative_upgrade(1),
     m_assistants(0),
     m_morality(Faction::NONE),
     m_running(false) {
+        // Same seed (to change)
+        srand(0);
+
         int n_upgrade;
         int n_spell;
         // Initialisation of upgrades vectors
@@ -129,14 +138,10 @@ double GameManager::get_money() {
 
 void GameManager::click(bool manual) {
     m_stat_tracker.m_clicks++;
-    double gain;
-    if (manual) {
-        gain = get_click_gain();
-    } else {
-        gain = get_assistant_money_gain();;
-    }
+    double gain = get_click_gain();
+    m_stat_tracker.m_click_gain += gain;
+    add_faction_coin(get_faction_coin_chance());
     m_money += gain;
-    m_stat_tracker.m_click_gain += gain; 
 }
 
 double GameManager::get_prod() {
@@ -144,6 +149,10 @@ double GameManager::get_prod() {
     prod += get_building_prod();
     prod += get_assistant_money_gain()*get_assistants();
     return prod*m_money_multiplicative_upgrade;
+}
+
+double GameManager::get_faction_coin_chance() {
+    return (DEFAULT_FACTION_COIN_CHANCE+m_faction_coin_additive_upgrade)*m_faction_coin_multiplicative_upgrade;
 }
 
 double GameManager::get_building_prod() {
@@ -162,6 +171,10 @@ double GameManager::get_click_gain() {
 
 double GameManager::get_assistant_money_gain() {
     return get_click_gain()*0.05;
+}
+
+double GameManager::get_assistant_faction_coin_chance() {
+    return get_faction_coin_chance();
 }
 
 double GameManager::get_mana() {
@@ -212,6 +225,18 @@ void GameManager::set_money(double value) {
     m_money = value;
 }
 
+double GameManager::get_faction_coin(Faction::FACTION_COINS faction) {
+    return m_faction_coins[faction];
+}
+void GameManager::add_faction_coin(double chance) {
+    Faction::FACTION_COINS target = (Faction::FACTION_COINS)(rand() % Faction::FACTION_COINS::N_FACTIONS_COINS);
+    double amount = std::floor(chance) + ((rand() % 100) < std::round((chance - std::floor(chance)) * 100));
+    m_faction_coins[target] += amount;
+}
+void GameManager::set_faction_coin(Faction::FACTION_COINS faction, double amount) {
+    m_faction_coins[faction] = amount;
+}
+
 bool GameManager::buy(double cost) {
     // If not running, it's probably loading a save
     if (!m_running) {
@@ -260,9 +285,8 @@ void GameManager::assistant_function_for_thread() {
     // Wait for the game_manager to run
     while (!m_running) {}
     while (m_running) {
-        for (int i = 0; i < get_assistants(); i++) {
-            click(false);
-        }
+        m_money += get_assistant_money_gain()*m_assistants;
+        add_faction_coin(get_assistant_faction_coin_chance()*m_assistants);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }

@@ -4,6 +4,7 @@
 #include "stat_tracker.hpp"
 #include "building.hpp"
 #include "upgrades/building_upgrade.hpp"
+#include "faction.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -51,6 +52,8 @@ void SaveManager::load_misc_save() {
             m_game_manager.set_money(std::stod(value));
         } else if (type == "Mana") {
             m_game_manager.set_mana(std::stod(value));
+        } else if (type == "FactionCoin") {
+            m_game_manager.set_faction_coin((Faction::FACTION_COINS)std::stoi(object), std::stod(value));
         } else if (type == "Building") {
             load_building(object, value);
         } else if (type == "FactionUpgrade") {
@@ -72,6 +75,11 @@ void SaveManager::store_misc_save() {
     file_stream << std::format("Gold : () -> {}\n", m_game_manager.get_money());
     file_stream << std::format("Mana : () -> {}\n", m_game_manager.get_mana());
     
+    // Faction coins
+    for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+        file_stream << std::format("FactionCoin : {} -> {}\n", i, m_game_manager.get_faction_coin((Faction::FACTION_COINS)i));
+    }
+
     // Buildings
     for (std::shared_ptr<Building> building: m_game_manager.get_all_buildings()) {
         file_stream << std::format("Building : {} -> {}\n", building->get_index(), building->get_level());
