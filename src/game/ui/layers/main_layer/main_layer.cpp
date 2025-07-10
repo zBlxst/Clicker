@@ -84,9 +84,9 @@ void MainLayer::display() {
         std::string assistants_text = std::format("Assistants {}", m_window_manager.get_game_manager().get_assistants());
         std::string mana_text = std::format("Mana {} / {}", (int)m_window_manager.get_game_manager().get_mana(), (int)m_window_manager.get_game_manager().get_mana_max());
         std::string faction_coins_text = std::format("Faction coins : [{}, {}, {}, {}, {}, {}]", 
-            m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ANGEL_COIN),
-            m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ELVEN_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::FAIRY_COIN),
+            m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ELVEN_COIN),
+            m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ANGEL_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::GOBLIN_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::UNDEAD_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::DEMON_COIN)

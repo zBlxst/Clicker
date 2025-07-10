@@ -1,15 +1,17 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class Faction {
 public:
+    static constexpr int N_BASE_FACTIONS_PER_MORALITY = 3;
     enum MORALITY {
         GOOD,
         BAD,
         NEUTRAL,
         N_MORALITIES,
-        NONE,
+        NO_MORALITY,
     };
     static constexpr std::string MORALITIES_NAMES[MORALITY::N_MORALITIES] = { "Good", "Bad", "Neutral"};
 
@@ -24,6 +26,7 @@ public:
         DRUID,
         FACELESS,
         N_FACTIONS,
+        NO_FACTION
     };
 
     enum FACTION_COINS {
@@ -36,7 +39,7 @@ public:
         N_FACTIONS_COINS,
     };
 
-    static constexpr FACTION FACTION_PER_MORALITY[N_MORALITIES][3] = {
+    static constexpr FACTION BASE_FACTION_PER_MORALITY[N_MORALITIES][N_BASE_FACTIONS_PER_MORALITY] = {
         { FAIRY, ELVEN, ANGEL },
         { GOBLIN, UNDEAD, DEMON },
         { TITAN, DRUID, FACELESS },
@@ -46,4 +49,6 @@ public:
         "Goblin", "Undead", "Demon",
         "Titan", "Druid", "Faceless",
     };
+
+    static std::vector<FACTION_COINS> get_faction_coins_per_faction(Faction::FACTION faction);
 };

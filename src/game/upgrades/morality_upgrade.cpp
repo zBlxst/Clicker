@@ -19,13 +19,13 @@ void MoralityUpgrade::buy_callback() {
 
 std::vector<std::string> MoralityUpgrade::get_base_text_to_display() {
     std::vector<std::string> res = {
-        std::format("Morality : {}", Faction::MORALITIES_NAMES[m_morality], (int)m_morality)
+        std::format("Morality : {}", Faction::MORALITIES_NAMES[m_morality])
     };
     return res;
 }
 
 bool MoralityUpgrade::is_available() {
-    return Upgrade::is_available() && m_game_manager.get_morality() == Faction::NONE;
+    return Upgrade::is_available() && m_game_manager.get_morality() == Faction::NO_MORALITY;
 }
 
 double MoralityUpgrade::get_buff() {

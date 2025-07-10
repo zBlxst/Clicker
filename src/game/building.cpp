@@ -45,5 +45,5 @@ bool Building::is_available() {
     if (m_index <= 2) {
         return true;
     }
-    return m_game_manager.get_morality() != Faction::MORALITY::NONE;
+    return m_game_manager.get_morality() != Faction::MORALITY::NO_MORALITY;
 }

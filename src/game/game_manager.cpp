@@ -7,6 +7,7 @@
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
 #include "upgrades/morality_upgrade.hpp"
+#include "upgrades/faction_upgrade.hpp"
 #include "achievement.hpp"
 
 #include <unistd.h>
@@ -42,7 +43,8 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_faction_coin_additive_upgrade(0),
     m_faction_coin_multiplicative_upgrade(1),
     m_assistants(0),
-    m_morality(Faction::NONE),
+    m_morality(Faction::NO_MORALITY),
+    m_faction(Faction::NO_FACTION),
     m_running(false) {
         // Same seed (to change)
         srand(0);
@@ -65,6 +67,14 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         for (int i = 0; i < Faction::N_MORALITIES; i++) {
             std::shared_ptr<MoralityUpgrade> m_up = std::make_shared<MoralityUpgrade>(n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::FACTION].push_back(m_up);
+        }
+        // Initialisation of faction upgrades
+        n_upgrade = 0;
+        for (int i = 0; i < Faction::MORALITY::N_MORALITIES; i++) {
+            for (int j = 0; j < Faction::N_BASE_FACTIONS_PER_MORALITY; j++) {
+                std::shared_ptr<FactionUpgrade> f_up = std::make_shared<FactionUpgrade>((Faction::MORALITY)i, (Faction::FACTION)j, n_upgrade++, std::ref(*this));
+                m_all_upgrades[Upgrade::TYPES::FACTION].push_back(f_up);
+            }
         }
 
         // Initialisation of building upgrades
@@ -249,6 +259,19 @@ bool GameManager::buy(double cost) {
     return true;
 }
 
+bool GameManager::buy_faction_coins(double cost, std::vector<Faction::FACTION_COINS> faction_coin) {
+    for (Faction::FACTION_COINS faction : faction_coin) {
+        if (m_faction_coins[faction] < cost) {
+            return false;
+        }
+    }
+    for (Faction::FACTION_COINS faction : faction_coin) {
+        m_faction_coins[faction] -= cost;
+    }
+    return true;
+}
+
+
 void GameManager::add_mana(double amount) {
     double gain = amount;
     if (gain >= get_mana_max() - get_mana()) 
@@ -317,6 +340,14 @@ Faction::MORALITY GameManager::get_morality() {
 
 void GameManager::set_morality(Faction::MORALITY morality) {
     m_morality = morality;
+}
+
+Faction::FACTION GameManager::get_faction() {
+    return m_faction;
+}
+
+void GameManager::set_faction(Faction::FACTION faction) {
+    m_faction = faction;
 }
 
 void GameManager::start() {

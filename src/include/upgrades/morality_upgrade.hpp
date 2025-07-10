@@ -1,6 +1,5 @@
 #pragma once
 
-#include "building.hpp"
 #include "upgrades/upgrade.hpp"
 #include "faction.hpp"
 

@@ -56,6 +56,7 @@ private:
 
     int m_assistants;
     Faction::MORALITY m_morality;
+    Faction::FACTION m_faction;
 
 
     bool m_running;
@@ -80,7 +81,9 @@ public:
     double get_faction_coin(Faction::FACTION_COINS faction);
     void add_faction_coin(double chance);
     void set_faction_coin(Faction::FACTION_COINS faction, double chance);
+    bool buy_faction_coins(double cost, std::vector<Faction::FACTION_COINS> faction_coins);
     
+
     void add_mana(double amount);
     void set_mana(double value);
     bool cast_spell(double cost);
@@ -110,6 +113,9 @@ public:
 
     Faction::MORALITY get_morality();
     void set_morality(Faction::MORALITY morality);
+
+    Faction::FACTION get_faction();
+    void set_faction(Faction::FACTION faction);
 
     bool is_running();
 
