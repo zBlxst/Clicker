@@ -12,8 +12,8 @@ public:
     static constexpr sf::Color WHITE = sf::Color::White;
     static constexpr sf::Color BLACK = sf::Color::Black;
 
-    const unsigned int m_width;
-    const unsigned int m_height;
+    const int m_width;
+    const int m_height;
 private:
     sf::RenderWindow m_window;
     GameManager& m_game_manager;
@@ -29,9 +29,9 @@ public:
     
     void pop_layer();
     
-    void draw_rect(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
-    void draw_text(std::string text, unsigned int x, unsigned int y, unsigned int size, sf::Color color);
-    void draw_text(std::vector<std::string> text, unsigned int x, unsigned int y, unsigned int size, sf::Color color);
+    void draw_rect(int x, int y, int width, int height, sf::Color color);
+    void draw_text(std::string text, int x, int y, int size, sf::Color color);
+    void draw_text(std::vector<std::string> text, int x, int y, int size, sf::Color color);
     
     GameManager& get_game_manager() const;
     

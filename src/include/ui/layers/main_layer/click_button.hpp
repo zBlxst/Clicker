@@ -5,8 +5,8 @@
 class WindowManager;
 
 class ClickButton : public Button {
-    static constexpr unsigned int BASE_POS_X = 0;
-    static constexpr unsigned int BASE_POS_Y = 0;
+    static constexpr int BASE_POS_X = 0;
+    static constexpr int BASE_POS_Y = 0;
     
 
 private:

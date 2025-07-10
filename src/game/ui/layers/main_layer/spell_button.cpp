@@ -1,6 +1,7 @@
 #include "ui/layers/main_layer/spell_button.hpp"
 
 #include <format>
+#include <math.h>
 
 #include "game_manager.hpp"
 #include "spells/spell.hpp"

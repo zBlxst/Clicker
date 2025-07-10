@@ -4,7 +4,7 @@
 #include <iostream>
 #include <format>
 
-BuildingUpgrade::BuildingUpgrade(unsigned int building_index, unsigned int upgrade_index, unsigned int index_in_gm, GameManager &game_manager) :
+BuildingUpgrade::BuildingUpgrade(int building_index, int upgrade_index, int index_in_gm, GameManager &game_manager) :
     Upgrade(index_in_gm, game_manager),
     m_building_index(building_index),
     m_upgrade_index(upgrade_index) {}
@@ -22,7 +22,7 @@ double BuildingUpgrade::get_cost() {
 }
 
 void BuildingUpgrade::buy_callback() {
-    m_game_manager.get_all_buildings()[m_building_index]->m_multiplicative_buff *= get_buff();
+    m_game_manager.get_all_buildings()[m_building_index]->m_buff.m_multiplicative_buff *= get_buff();
     if (m_upgrade_index < 2 && m_building_index <= 10) {
         m_game_manager.add_assistants(1);
     }

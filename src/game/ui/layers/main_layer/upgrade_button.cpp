@@ -1,6 +1,7 @@
 #include "ui/layers/main_layer/upgrade_button.hpp"
 
 #include <format>
+#include <math.h>
 
 #include "game_manager.hpp"
 #include "upgrades/upgrade.hpp"

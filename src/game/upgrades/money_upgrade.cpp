@@ -4,7 +4,7 @@
 
 #include <format>
 
-MoneyUpgrade::MoneyUpgrade(int index, unsigned int index_in_gm, GameManager& game_manager) :
+MoneyUpgrade::MoneyUpgrade(int index, int index_in_gm, GameManager& game_manager) :
     m_index(index),
     Upgrade(index_in_gm, game_manager) {}
 
@@ -25,6 +25,6 @@ bool MoneyUpgrade::is_available() {
     return Upgrade::is_available() && m_game_manager.get_stat_tracker().m_click_gain >= UPGRADE_REQS[m_index];
 }
 void MoneyUpgrade::buy_callback() {
-    m_game_manager.add_click_multiplicative_upgrade(get_buff());
-    m_game_manager.add_money_multiplicative_upgrade(get_buff());
+    m_game_manager.m_click_buff.m_multiplicative_buff *= get_buff();
+    m_game_manager.m_production_buff.m_multiplicative_buff *= get_buff();
 }

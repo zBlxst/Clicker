@@ -21,9 +21,9 @@ protected:
     bool m_bought;
 
 public:
-    Upgrade(unsigned int index_in_gm, GameManager& game_manager);
+    Upgrade(int index_in_gm, GameManager& game_manager);
 
-    const unsigned int m_index_in_gm;
+    const int m_index_in_gm;
 
     virtual double get_cost() = 0;
     virtual double get_buff() = 0;

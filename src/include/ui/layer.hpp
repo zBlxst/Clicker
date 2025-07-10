@@ -14,6 +14,6 @@ protected:
 public:
     Layer(WindowManager& window_manager);
     virtual void display();
-    void recv_click(unsigned int x, unsigned int y);
+    void recv_click(int x, int y);
 
 };

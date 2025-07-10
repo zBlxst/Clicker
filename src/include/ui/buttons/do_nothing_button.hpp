@@ -8,7 +8,7 @@ class DoNothingButton : public Button {
 private:
 
 public:
-    DoNothingButton(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowManager& window_manager);
+    DoNothingButton(int x, int y, int width, int height, WindowManager& window_manager);
     void callback();
     void display();
 };

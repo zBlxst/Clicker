@@ -6,7 +6,7 @@
 
 #include "stat_tracker.hpp"
 #include "faction.hpp"
-
+#include "buff.hpp"
 
 class Building;
 class Upgrade;
@@ -38,65 +38,47 @@ private:
     std::shared_ptr<std::thread> m_mana_regen_thread;
     std::shared_ptr<std::thread> m_achievement_thread;
 
-    // Boosts
-    double m_money_multiplicative_upgrade;
-    
-    double m_click_additive_upgrade;
-    double m_click_multiplicative_upgrade;
-    double m_click_percent_of_building_prod;
-
-    double m_mana_regen_additive_upgrade;
-    double m_mana_regen_multiplicative_upgrade;
-    double m_mana_max_additive_upgrade;
-    double m_mana_max_multiplicative_upgrade;
-
-    double m_faction_coin_additive_upgrade;
-    double m_faction_coin_multiplicative_upgrade;
-
-
-    int m_assistants;
+    int m_real_assistants;
     Faction::MORALITY m_morality;
     Faction::FACTION m_faction;
-
-
+    
+    
     bool m_running;
-
+    
     void money_gain_function_for_thread();
     void mana_gain_function_for_thread();
     void assistant_function_for_thread();
     void achievement_function_for_thread();
-
+    
 public:
     GameManager(StatTracker& stat_tracker);
     
+    Buff m_production_buff;
+    Buff m_click_buff;
+    Buff m_mana_regen_buff;
+    Buff m_mana_max_buff;
+    Buff m_faction_coins_buff;
+    Buff m_assistants_buff;
+
     void start();
     void stop();
-
+    
     void click(bool manual);
     double get_money();
     void add_money(double amount);
     void set_money(double value);
     bool buy(double cost);
-
+    
     double get_faction_coin(Faction::FACTION_COINS faction);
     void add_faction_coin(double chance);
     void set_faction_coin(Faction::FACTION_COINS faction, double chance);
     bool buy_faction_coins(double cost, std::vector<Faction::FACTION_COINS> faction_coins);
     
-
+    
     void add_mana(double amount);
     void set_mana(double value);
     bool cast_spell(double cost);
     
-    void add_money_multiplicative_upgrade(double amount);
-    void add_click_additive_upgrade(double amount);
-    void add_click_multiplicative_upgrade(double amount);
-    void add_click_percent_of_prod(double amount);
-    void add_mana_regen_additive_upgrade(double amount);
-    void add_mana_regen_multiplicative_upgrade(double amount);
-    void add_mana_max_additive_upgrade(double amount);
-    void add_mana_max_multiplicative_upgrade(double amount);
-
     void add_assistants(int amount);
 
     double get_prod();

@@ -4,7 +4,7 @@
 
 #include <format>
 
-ClickUpgrade::ClickUpgrade(int index, unsigned int index_in_gm, GameManager& game_manager) :
+ClickUpgrade::ClickUpgrade(int index, int index_in_gm, GameManager& game_manager) :
     m_index(index),
     Upgrade(index_in_gm, game_manager) {}
 
@@ -25,5 +25,5 @@ bool ClickUpgrade::is_available() {
     return Upgrade::is_available() && m_game_manager.get_stat_tracker().m_clicks >= UPGRADE_REQS[m_index];
 }
 void ClickUpgrade::buy_callback() {
-    m_game_manager.add_click_additive_upgrade(get_buff());
+    m_game_manager.m_click_buff.m_additive_buff += get_buff();
 }

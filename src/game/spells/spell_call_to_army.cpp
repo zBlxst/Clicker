@@ -13,18 +13,18 @@ SpellCallToArmy::SpellCallToArmy(int index, GameManager& game_manager) :
     }
 
 void SpellCallToArmy::thread_function() {
-    m_remaining_time = m_max_time;
     while (m_game_manager.is_running()) {
         while (!m_running && m_game_manager.is_running()) {
             sleep(1);
         }
-        double boost = get_buff();
-        m_game_manager.add_money_multiplicative_upgrade(boost);
+        m_remaining_time = m_max_time;
+        std::shared_ptr<std::function<double(GameManager&)>> func_pointer = std::make_shared<std::function<double(GameManager&)>>(SpellCallToArmy::get_buff_static);
+        m_game_manager.m_production_buff.m_multiplicative_buff_callbacks.push_back(func_pointer);
         while(m_remaining_time-- > 0 && m_game_manager.is_running()) {
             sleep(1);
         }
         m_running = false;
-        m_game_manager.add_money_multiplicative_upgrade(1/boost);
+        m_game_manager.m_production_buff.remove_callback(func_pointer);
     }
 }
 
@@ -33,5 +33,9 @@ void SpellCallToArmy::callback() {
 }
 
 double SpellCallToArmy::get_buff() {
-    return 1+0.01*pow(25 + 0.3*m_game_manager.get_all_buildings_level(), 0.975);
+    return SpellCallToArmy::get_buff_static(m_game_manager);
+}
+
+double SpellCallToArmy::get_buff_static(GameManager& game_manager) {
+    return 1+0.01*pow(25 + 0.3*game_manager.get_all_buildings_level(), 0.975);
 }

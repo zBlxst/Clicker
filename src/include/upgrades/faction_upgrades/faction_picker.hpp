@@ -5,7 +5,7 @@
 
 class GameManager;
 
-class FactionUpgrade : public UpgradeFactionCoins {
+class FactionPicker : public UpgradeFactionCoins {
 
 public:
     static constexpr double UPGRADE_COSTS[Faction::N_FACTIONS] = {20, 20, 20,
@@ -15,7 +15,7 @@ private:
     Faction::MORALITY m_morality;
     Faction::FACTION m_faction;
 public:
-    FactionUpgrade(Faction::MORALITY morality, Faction::FACTION faction, unsigned int index_in_gm, GameManager& game_manager);
+    FactionPicker(Faction::MORALITY morality, Faction::FACTION faction, int index_in_gm, GameManager& game_manager);
     void buy_callback();
     bool is_available();
     double get_cost();

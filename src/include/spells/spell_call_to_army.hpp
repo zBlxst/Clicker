@@ -20,5 +20,5 @@ public:
     SpellCallToArmy(int index, GameManager& game_manager);
     void callback();
     double get_buff();
-
+    static double get_buff_static(GameManager& game_manager);
 };

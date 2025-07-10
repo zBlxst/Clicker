@@ -53,7 +53,7 @@ run: $(BUILD_DIR)/$(TARGET_EXEC)
 	$(BUILD_DIR)/$(TARGET_EXEC)
 
 remove_save:
-	rm $(BUILD_DIR)/*.save
+	rm -f $(BUILD_DIR)/*.save
 
 reset: remove_save run
 

@@ -4,7 +4,7 @@
 
 #include <format>
 
-TreasureUpgrade::TreasureUpgrade(int index, unsigned int index_in_gm, GameManager& game_manager) :
+TreasureUpgrade::TreasureUpgrade(int index, int index_in_gm, GameManager& game_manager) :
     m_index(index),
     Upgrade(index_in_gm, game_manager) {}
 
@@ -25,5 +25,8 @@ bool TreasureUpgrade::is_available() {
     return Upgrade::is_available() && m_game_manager.get_stat_tracker().m_total_gain >= UPGRADE_REQS[m_index];
 }
 void TreasureUpgrade::buy_callback() {
-    m_game_manager.add_click_percent_of_prod(get_buff());
+    double buff = get_buff();
+    m_game_manager.m_click_buff.m_additive_buff_callbacks.push_back(
+      std::make_shared<std::function<double(GameManager&)>>([buff](GameManager& game_manager) { return buff*game_manager.get_building_prod(); })
+    );
 }

@@ -1,6 +1,7 @@
 #include "ui/layers/main_layer/building_button.hpp"
 
 #include <format>
+#include <math.h>
 
 #include "game_manager.hpp"
 #include "building.hpp"
@@ -29,4 +30,15 @@ void BuildingButton::display() {
                                             std::format("Gain : {}/s", std::round(m_game_manager.get_all_buildings()[m_index]->get_gain())),
                                         }; 
     m_window_manager.draw_text(to_write, m_x, m_y, 15, WindowManager::BLACK);
+}
+
+sf::Color BuildingButton::get_background_color() {
+    switch (m_game_manager.get_all_buildings()[m_index]->m_morality)
+    {
+    case Faction::MORALITY::GOOD:
+        return sf::Color::Cyan;
+    case Faction::MORALITY::BAD:
+        return sf::Color(0xff8000ff);
+    }
+    return sf::Color::White;
 }

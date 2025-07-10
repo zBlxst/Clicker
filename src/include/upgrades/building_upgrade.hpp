@@ -9,8 +9,8 @@ class BuildingUpgrade : public Upgrade {
 
 public:
     static constexpr int N_UPGRADES = 19;
-    const unsigned int m_building_index;
-    const unsigned int m_upgrade_index;
+    const int m_building_index;
+    const int m_upgrade_index;
     
 private:
     static constexpr double UPGRADE_REQS[N_UPGRADES] = {5, 25, 75, 150, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1250, 1500, 1750, 2000, 2500};
@@ -31,7 +31,7 @@ private:
 
 
 public:
-    BuildingUpgrade(unsigned int building_index, unsigned int upgrade_index, unsigned int index_in_gm, GameManager& game_manager);
+    BuildingUpgrade(int building_index, int upgrade_index, int index_in_gm, GameManager& game_manager);
     int get_req();
     double get_buff();
     double get_cost();

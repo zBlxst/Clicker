@@ -18,7 +18,7 @@ void Layer::display() {
     }
 }
 
-void Layer::recv_click(unsigned int x, unsigned int y) {
+void Layer::recv_click(int x, int y) {
     for (std::shared_ptr<Button> b: std::ranges::views::reverse(m_all_buttons)) {
         if (b->catched_click(x, y))
             break;

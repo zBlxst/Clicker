@@ -6,8 +6,10 @@
 #include "upgrades/building_upgrade.hpp"
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
-#include "upgrades/morality_upgrade.hpp"
-#include "upgrades/faction_upgrade.hpp"
+#include "upgrades/treasure_upgrade.hpp"
+#include "upgrades/faction_upgrades/faction_picker.hpp"
+#include "upgrades/faction_upgrades/morality_picker.hpp"
+#include "upgrades/faction_upgrades/fairy_upgrade.hpp"
 #include "achievement.hpp"
 
 #include <unistd.h>
@@ -20,7 +22,7 @@
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
-    m_money(0),
+    m_money(25000e100),
     m_mana(DEFAULT_MANA_MAX),
     m_faction_coins({}),
     m_all_buildings(),
@@ -32,17 +34,14 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_mana_regen_thread(std::make_shared<std::thread>(&GameManager::mana_gain_function_for_thread, this)),
     m_achievement_thread(std::make_shared<std::thread>(&GameManager::achievement_function_for_thread, this)),
     
-    m_money_multiplicative_upgrade(1),
-    m_click_additive_upgrade(0),
-    m_click_multiplicative_upgrade(1),
-    m_click_percent_of_building_prod(0),
-    m_mana_regen_additive_upgrade(0),
-    m_mana_regen_multiplicative_upgrade(1),
-    m_mana_max_additive_upgrade(0),
-    m_mana_max_multiplicative_upgrade(1),
-    m_faction_coin_additive_upgrade(0),
-    m_faction_coin_multiplicative_upgrade(1),
-    m_assistants(0),
+    m_production_buff(std::ref(*this)),
+    m_click_buff(std::ref(*this)),
+    m_mana_regen_buff(std::ref(*this)),
+    m_mana_max_buff(std::ref(*this)),
+    m_faction_coins_buff(std::ref(*this)),
+    m_assistants_buff(std::ref(*this)),
+
+    m_real_assistants(0),
     m_morality(Faction::NO_MORALITY),
     m_faction(Faction::NO_FACTION),
     m_running(false) {
@@ -62,19 +61,24 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             m_all_buildings.push_back(b);
         }
 
-        // Initialisation of morality upgrades
+        // Initialisation of faction
+        // Initialisation of morality pickers
         n_upgrade = 0;
         for (int i = 0; i < Faction::N_MORALITIES; i++) {
-            std::shared_ptr<MoralityUpgrade> m_up = std::make_shared<MoralityUpgrade>(n_upgrade++, std::ref(*this));
+            std::shared_ptr<MoralityPicker> m_up = std::make_shared<MoralityPicker>((Faction::MORALITY)i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::FACTION].push_back(m_up);
         }
-        // Initialisation of faction upgrades
-        n_upgrade = 0;
+        // Initialisation of faction pickers
         for (int i = 0; i < Faction::MORALITY::N_MORALITIES; i++) {
             for (int j = 0; j < Faction::N_BASE_FACTIONS_PER_MORALITY; j++) {
-                std::shared_ptr<FactionUpgrade> f_up = std::make_shared<FactionUpgrade>((Faction::MORALITY)i, (Faction::FACTION)j, n_upgrade++, std::ref(*this));
+                std::shared_ptr<FactionPicker> f_up = std::make_shared<FactionPicker>((Faction::MORALITY)i, Faction::BASE_FACTION_PER_MORALITY[i][j], n_upgrade++, std::ref(*this));
                 m_all_upgrades[Upgrade::TYPES::FACTION].push_back(f_up);
             }
+        }
+        // Initialisation of faction upgrades
+        for (int i = 0; i < 9; i++) {
+            std::shared_ptr<FairyUpgrade> f_up = std::make_shared<FairyUpgrade>(i, n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::FACTION].push_back(f_up);
         }
 
         // Initialisation of building upgrades
@@ -84,6 +88,10 @@ GameManager::GameManager(StatTracker& stat_tracker) :
                 std::shared_ptr<BuildingUpgrade> b_up = std::make_shared<BuildingUpgrade>(i, j, n_upgrade++,std::ref(*this));
                 m_all_upgrades[Upgrade::TYPES::BUILDING].push_back(b_up);
             }    
+        }
+
+        for (int i = 0; i < 6; i++) {
+            m_faction_coins[i] = 10000;
         }
 
         // Initialisation of misc upgrades
@@ -96,6 +104,10 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             std::shared_ptr<MoneyUpgrade> c_up = std::make_shared<MoneyUpgrade>(i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
         }
+        for (int i = 0; i < TreasureUpgrade::N_UPGRADES; i++) {
+            std::shared_ptr<TreasureUpgrade> c_up = std::make_shared<TreasureUpgrade>(i, n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
+        }
 
         // Put threads in all_threads
         add_thread(m_buildings_thread);
@@ -104,41 +116,8 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         add_thread(m_achievement_thread);
 }
 
-void GameManager::add_click_additive_upgrade(double amount) {
-    m_click_additive_upgrade += amount;
-}
-
-void GameManager::add_click_multiplicative_upgrade(double amount) {
-    m_click_multiplicative_upgrade *= amount;
-}
-
-void GameManager::add_mana_regen_additive_upgrade(double amount) {
-    m_mana_regen_additive_upgrade += amount;
-}
-
-void GameManager::add_mana_regen_multiplicative_upgrade(double amount) {
-    m_mana_regen_multiplicative_upgrade *= amount;
-}
-
-void GameManager::add_mana_max_additive_upgrade(double amount) {
-    m_mana_max_additive_upgrade += amount;
-}
-
-void GameManager::add_mana_max_multiplicative_upgrade(double amount) {
-    m_mana_max_multiplicative_upgrade *= amount;
-}
-
-
-void GameManager::add_money_multiplicative_upgrade(double amount) {
-    m_money_multiplicative_upgrade *= amount;
-}
-
-void GameManager::add_click_percent_of_prod(double amount) {
-    m_click_percent_of_building_prod += amount;
-}
-
 void GameManager::add_assistants(int amount) {
-    m_assistants += amount;
+    m_real_assistants += amount;
 }
 
 
@@ -151,18 +130,18 @@ void GameManager::click(bool manual) {
     double gain = get_click_gain();
     m_stat_tracker.m_click_gain += gain;
     add_faction_coin(get_faction_coin_chance());
-    m_money += gain;
+    add_money(gain);
 }
 
 double GameManager::get_prod() {
     double prod = 0;
     prod += get_building_prod();
     prod += get_assistant_money_gain()*get_assistants();
-    return prod*m_money_multiplicative_upgrade;
+    return m_production_buff.get_buffed_value(prod);
 }
 
 double GameManager::get_faction_coin_chance() {
-    return (DEFAULT_FACTION_COIN_CHANCE+m_faction_coin_additive_upgrade)*m_faction_coin_multiplicative_upgrade;
+    return m_faction_coins_buff.get_buffed_value(DEFAULT_FACTION_COIN_CHANCE);
 }
 
 double GameManager::get_building_prod() {
@@ -176,7 +155,7 @@ double GameManager::get_building_prod() {
 
 
 double GameManager::get_click_gain() {
-    return (1+m_click_additive_upgrade)*m_click_multiplicative_upgrade + m_click_percent_of_building_prod*get_building_prod();
+    return m_click_buff.get_buffed_value(1);
 }
 
 double GameManager::get_assistant_money_gain() {
@@ -192,16 +171,16 @@ double GameManager::get_mana() {
 }
 
 double GameManager::get_mana_max() {
-    return (DEFAULT_MANA_MAX+m_mana_max_additive_upgrade)*m_mana_max_multiplicative_upgrade;
+    return m_mana_max_buff.get_buffed_value(DEFAULT_MANA_MAX);
 }
 
 
 double GameManager::get_mana_regen() {
-    return (1+m_mana_regen_additive_upgrade)*m_mana_regen_multiplicative_upgrade;
+    return m_mana_regen_buff.get_buffed_value(1);
 }
 
 int GameManager::get_assistants() {
-    return m_assistants;
+    return m_assistants_buff.get_buffed_value(m_real_assistants);
 }
 
 int GameManager::get_all_buildings_level() {
@@ -308,8 +287,8 @@ void GameManager::assistant_function_for_thread() {
     // Wait for the game_manager to run
     while (!m_running) {}
     while (m_running) {
-        m_money += get_assistant_money_gain()*m_assistants;
-        add_faction_coin(get_assistant_faction_coin_chance()*m_assistants);
+        add_money(get_assistant_money_gain()*get_assistants());
+        add_faction_coin(get_assistant_faction_coin_chance()*get_assistants());
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }

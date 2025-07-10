@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-UpgradeFactionCoins::UpgradeFactionCoins(unsigned int index_in_gm, std::vector<Faction::FACTION_COINS> faction_coins, GameManager& game_manager) :
+UpgradeFactionCoins::UpgradeFactionCoins(int index_in_gm, std::vector<Faction::FACTION_COINS> faction_coins, GameManager& game_manager) :
     Upgrade(index_in_gm, game_manager),
     m_faction_coins(std::move(faction_coins)) {}
 

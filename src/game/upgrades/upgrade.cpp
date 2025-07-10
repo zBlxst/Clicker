@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Upgrade::Upgrade(unsigned int index_in_gm, GameManager& game_manager) :
+Upgrade::Upgrade(int index_in_gm, GameManager& game_manager) :
     m_index_in_gm(index_in_gm),
     m_game_manager(game_manager),
     m_bought(false) {}

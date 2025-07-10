@@ -41,7 +41,7 @@ void WindowManager::start() {
             }
 
         }
-
+        
         m_window.clear();
         m_all_layers.back()->display();
         m_window.display();
@@ -52,16 +52,17 @@ void WindowManager::pop_layer() {
     m_all_layers.pop_back();
 }
 
-void WindowManager::draw_rect(  unsigned int x, unsigned int y, 
-                                unsigned int width, unsigned int height) {
+void WindowManager::draw_rect(  int x, int y, 
+                                int width, int height, sf::Color color) {
     sf::RectangleShape rect;
+    rect.setFillColor(color);
     rect.setPosition(sf::Vector2f(x, y));
     rect.setSize(sf::Vector2f(width, height));
     m_window.draw(rect);
 }
 
-void WindowManager::draw_text(  std::string text, unsigned int x, unsigned int y, 
-                                unsigned int size, sf::Color color) {
+void WindowManager::draw_text(  std::string text, int x, int y, 
+                                int size, sf::Color color) {
     m_text.setPosition(sf::Vector2f(x, y));
     m_text.setString(text);
     m_text.setCharacterSize(size);
@@ -69,9 +70,9 @@ void WindowManager::draw_text(  std::string text, unsigned int x, unsigned int y
     m_window.draw(m_text);
 }
 
-void WindowManager::draw_text(  std::vector<std::string> text, unsigned int x, unsigned int y, 
-                                unsigned int size, sf::Color color) {
-    unsigned int height = y;
+void WindowManager::draw_text(  std::vector<std::string> text, int x, int y, 
+                                int size, sf::Color color) {
+    int height = y;
     for (std::string str: text) {
         draw_text(str, x, height, size, color);
         height += m_text.getGlobalBounds().size.y*1.5;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <bits/stdc++.h>
 
 // class WindowManager;
 class GameManager;
@@ -10,20 +9,22 @@ class GameManager;
 
 class Button {
 protected:
-    unsigned int m_x;
-    unsigned int m_y;
-    unsigned int m_width;
-    unsigned int m_height;
+    int m_x;
+    int m_y;
+    int m_width;
+    int m_height;
 
+    
     WindowManager& m_window_manager;
-
+    
     // std::function<void(WindowManager&)> m_callback;
     virtual void callback();
     virtual bool should_catch_click();
-
-public:
-    Button(unsigned int x, unsigned int y, unsigned int width, unsigned int height, 
+    
+    public:
+    Button(int x, int y, int width, int height, 
         WindowManager& window_manager);
-    bool catched_click(unsigned int x, unsigned int y);
+    bool catched_click(int x, int y);
     virtual void display();
+    virtual sf::Color get_background_color();
 };

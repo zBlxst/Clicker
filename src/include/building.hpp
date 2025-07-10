@@ -1,5 +1,8 @@
 #pragma once
 
+#include "buff.hpp"
+#include "faction.hpp"
+
 class GameManager;
 
 class Building {
@@ -24,14 +27,15 @@ protected:
     GameManager& m_game_manager;
 
     int m_index;
-    unsigned int m_level;
+    int m_level;
 
-    
 public:
-    double m_multiplicative_buff;
+    Buff m_buff;
+    Faction::MORALITY m_morality;
+    double m_cost_multiplier_buff;
 
     Building(int index, GameManager& game_manager);
-    unsigned int get_level();
+    int get_level();
     int get_index();
     double get_cost();
     double get_gain();

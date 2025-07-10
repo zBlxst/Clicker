@@ -16,7 +16,7 @@ private:
 
     int m_index;
 public:
-    MoneyUpgrade(int index, unsigned int index_in_gm, GameManager& game_manager);
+    MoneyUpgrade(int index, int index_in_gm, GameManager& game_manager);
 
     double get_cost();
     double get_buff();

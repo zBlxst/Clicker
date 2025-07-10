@@ -5,7 +5,7 @@
 #include "game_manager.hpp"
 #include "building.hpp"
 
-DoNothingButton::DoNothingButton(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowManager& window_manager):
+DoNothingButton::DoNothingButton(int x, int y, int width, int height, WindowManager& window_manager):
     Button( x, y, 
             width, height, window_manager) {}
 

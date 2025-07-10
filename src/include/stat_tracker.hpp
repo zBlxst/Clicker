@@ -9,7 +9,7 @@ private:
     std::string m_file_name;
 
 public:
-    unsigned int m_clicks;
+    int m_clicks;
     double m_last_second_gain;
     double m_click_gain;
     double m_total_gain;
