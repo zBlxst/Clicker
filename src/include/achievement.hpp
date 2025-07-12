@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <string>
 
 class GameManager;
 
@@ -21,16 +22,18 @@ private:
     static constexpr double CLICK_ACHIEVEMENTS[N_CLICK_ACHIEVEMENTS] = {100, 500, 1000, 2500, 5000, 10000, 50000, 100000};
     static constexpr double BUILDING_ACHIEVEMENTS[N_BUILDING_ACHIEVEMENTS] = {1, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 3500, 5000, 75000, 12000, 20000};
 
+    std::string m_name;
 
 protected:
     bool m_obtained;
     GameManager& m_game_manager;
 
 public:
-    Achievement(GameManager& game_manager, std::function<bool(GameManager&)> check_function);
+    Achievement(GameManager& game_manager, std::function<bool(GameManager&)> check_function, std::string name);
     void update();
     bool is_obtained();
     std::function<bool(GameManager&)> check_if_obtained;
+    std::vector<std::string> get_base_text_to_display();
 };
 
 std::function<bool(GameManager&)> money_achievements(double amount);

@@ -1,9 +1,11 @@
 #include "ui/window_manager.hpp"
 
 #include "ui/layers/main_layer/main_layer.hpp"
+#include "ui/layers/achievement_layer/achievement_layer.hpp"
 #include "ui/button.hpp"
 #include "game_manager.hpp"
 #include "building.hpp"
+#include "ui/layer.hpp"
 
 #include <iostream>
 #include <format>
@@ -13,11 +15,12 @@ WindowManager::WindowManager(unsigned int width, unsigned int height, GameManage
     m_height(height),
     m_window(sf::VideoMode({width, height}), "mygame"),
     m_game_manager(game_manager),
-    m_all_layers(),
-    m_font("assets/arial.ttf"),
-    m_text(m_font) {
-        std::shared_ptr<MainLayer> main_layer = std::make_shared<MainLayer>(std::ref(*this));
-        m_all_layers.push_back(main_layer);
+    m_all_layers() {
+        m_main_layer = std::make_shared<MainLayer>(std::ref(*this));
+        m_all_layers.push_back(m_main_layer);
+
+        m_achievement_layer = std::make_shared<AchievementLayer>(std::ref(*this));
+        m_all_layers.push_back(m_achievement_layer);
     }
 
 void WindowManager::start() {
@@ -41,9 +44,20 @@ void WindowManager::start() {
             }
 
         }
-        
+    
+        sf::RectangleShape transparency_rect;
+        transparency_rect.setFillColor(sf::Color(0xffffff80));
+        transparency_rect.setPosition(sf::Vector2f(0, 0));
+        transparency_rect.setSize(sf::Vector2f(m_width, m_height));
+    
         m_window.clear();
-        m_all_layers.back()->display();
+        for (std::shared_ptr<Layer> layer : m_all_layers) {
+            m_window.draw(transparency_rect);
+            m_current_drawing_layer = layer;
+            layer->m_render_texture.clear();
+            layer->display();
+            m_window.draw(layer->get_sprite());
+        }
         m_window.display();
     }
 }
@@ -52,22 +66,28 @@ void WindowManager::pop_layer() {
     m_all_layers.pop_back();
 }
 
+void WindowManager::push_layer(std::shared_ptr<Layer> layer) {
+    m_all_layers.push_back(layer);
+}
+
 void WindowManager::draw_rect(  int x, int y, 
                                 int width, int height, sf::Color color) {
+    sf::RenderTexture& target = m_current_drawing_layer->m_render_texture;
     sf::RectangleShape rect;
     rect.setFillColor(color);
     rect.setPosition(sf::Vector2f(x, y));
     rect.setSize(sf::Vector2f(width, height));
-    m_window.draw(rect);
+    target.draw(rect);
 }
 
 void WindowManager::draw_text(  std::string text, int x, int y, 
                                 int size, sf::Color color) {
-    m_text.setPosition(sf::Vector2f(x, y));
-    m_text.setString(text);
-    m_text.setCharacterSize(size);
-    m_text.setFillColor(color);
-    m_window.draw(m_text);
+    sf::RenderTexture& target = m_current_drawing_layer->m_render_texture;
+    sf_text.setPosition(sf::Vector2f(x, y));
+    sf_text.setString(text);
+    sf_text.setCharacterSize(size);
+    sf_text.setFillColor(color);
+    target.draw(sf_text);
 }
 
 void WindowManager::draw_text(  std::vector<std::string> text, int x, int y, 
@@ -75,8 +95,14 @@ void WindowManager::draw_text(  std::vector<std::string> text, int x, int y,
     int height = y;
     for (std::string str: text) {
         draw_text(str, x, height, size, color);
-        height += m_text.getGlobalBounds().size.y*1.5;
+        height += sf_text.getGlobalBounds().size.y*1.5;
     }
+}
+
+void WindowManager::render_texture(sf::RenderTexture& texture, int x, int y) {
+    sf::Sprite sprite(texture.getTexture());
+    sprite.setPosition(sf::Vector2f(x, y));
+    m_window.draw(sprite);
 }
 
 

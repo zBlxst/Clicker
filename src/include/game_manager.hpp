@@ -105,6 +105,7 @@ public:
     std::vector<std::shared_ptr<Building>>& get_all_buildings();
     std::vector<std::vector<std::shared_ptr<Upgrade>>>& get_all_upgrades();
     std::vector<std::shared_ptr<Spell>>& get_all_spells();
+    std::vector<std::shared_ptr<Achievement>>& get_all_achievements();
 
     StatTracker& get_stat_tracker();
 

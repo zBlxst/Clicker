@@ -211,6 +211,10 @@ std::vector<std::shared_ptr<Spell>>& GameManager::get_all_spells() {
     return m_all_spells;
 }
 
+std::vector<std::shared_ptr<Achievement>>& GameManager::get_all_achievements() {
+    return m_all_achievements;
+}
+
 
 void GameManager::add_money(double amount) {
     double gain = amount;

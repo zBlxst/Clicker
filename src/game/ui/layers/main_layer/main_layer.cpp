@@ -8,9 +8,11 @@
 #include "building_upgrade.hpp"
 #include "game_manager.hpp"
 
+#include <iostream>
+
 
 MainLayer::MainLayer(WindowManager& window_manager) :
-    Layer(window_manager),
+    Layer(0, 0, window_manager.m_width, window_manager.m_height, window_manager),
     m_all_upgrade_buttons() {
     
     // Initialisation of upgrades vectors
@@ -92,7 +94,7 @@ void MainLayer::display() {
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::UNDEAD_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::DEMON_COIN)
         );
-        std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_coins_text};
-        m_window_manager.draw_text(to_print, 0, 0, 15, WindowManager::WHITE);
-        Layer::display();
+    std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_coins_text};
+    m_window_manager.draw_text(to_print, 0, 0, 15, WindowManager::WHITE);
+    Layer::display();
 }

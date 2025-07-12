@@ -52,6 +52,9 @@ clean:
 run: $(BUILD_DIR)/$(TARGET_EXEC)
 	$(BUILD_DIR)/$(TARGET_EXEC)
 
+debug: $(BUILD_DIR)/$(TARGET_EXEC)
+	gdb $(BUILD_DIR)/$(TARGET_EXEC)
+	
 remove_save:
 	rm -f $(BUILD_DIR)/*.save
 

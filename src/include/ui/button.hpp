@@ -2,7 +2,7 @@
 
 
 // class WindowManager;
-class GameManager;
+class Layer;
 
 #include "ui/window_manager.hpp"
 
@@ -13,7 +13,6 @@ protected:
     int m_y;
     int m_width;
     int m_height;
-
     
     WindowManager& m_window_manager;
     
