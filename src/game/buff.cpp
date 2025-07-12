@@ -31,4 +31,11 @@ void Buff::remove_callback(std::shared_ptr<std::function<double(GameManager&)>> 
     std::erase(m_additive_buff_callbacks, func_pointer);
     std::erase(m_multiplicative_buff_callbacks, func_pointer);
     std::erase(m_exponential_buff_callbacks, func_pointer);
+    std::erase(m_misc_callbacks, func_pointer);
+}
+
+void Buff::call_misc_callbacks() {
+    for (std::shared_ptr<std::function<double(GameManager&)>> func : m_misc_callbacks) {
+        func->operator()(m_game_manager);
+    }
 }

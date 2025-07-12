@@ -7,9 +7,12 @@
 #include "upgrades/click_upgrade.hpp"
 #include "upgrades/money_upgrade.hpp"
 #include "upgrades/treasure_upgrade.hpp"
+
 #include "upgrades/faction_upgrades/faction_picker.hpp"
 #include "upgrades/faction_upgrades/morality_picker.hpp"
 #include "upgrades/faction_upgrades/fairy_upgrade.hpp"
+#include "upgrades/faction_upgrades/elven_upgrade.hpp"
+
 #include "achievement.hpp"
 
 #include <unistd.h>
@@ -40,6 +43,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_mana_max_buff(std::ref(*this)),
     m_faction_coins_buff(std::ref(*this)),
     m_assistants_buff(std::ref(*this)),
+    m_assistant_faction_coins_buff(std::ref(*this)),
 
     m_real_assistants(0),
     m_morality(Faction::NO_MORALITY),
@@ -78,6 +82,10 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         // Initialisation of faction upgrades
         for (int i = 0; i < 9; i++) {
             std::shared_ptr<FairyUpgrade> f_up = std::make_shared<FairyUpgrade>(i, n_upgrade++, std::ref(*this));
+            m_all_upgrades[Upgrade::TYPES::FACTION].push_back(f_up);
+        }
+        for (int i = 0; i < 9; i++) {
+            std::shared_ptr<ElvenUpgrade> f_up = std::make_shared<ElvenUpgrade>(i, n_upgrade++, std::ref(*this));
             m_all_upgrades[Upgrade::TYPES::FACTION].push_back(f_up);
         }
 
@@ -163,7 +171,7 @@ double GameManager::get_assistant_money_gain() {
 }
 
 double GameManager::get_assistant_faction_coin_chance() {
-    return get_faction_coin_chance();
+    return m_assistant_faction_coins_buff.get_buffed_value(get_faction_coin_chance());
 }
 
 double GameManager::get_mana() {
@@ -221,6 +229,7 @@ void GameManager::add_faction_coin(double chance) {
     Faction::FACTION_COINS target = (Faction::FACTION_COINS)(rand() % Faction::FACTION_COINS::N_FACTIONS_COINS);
     double amount = std::floor(chance) + ((rand() % 100) < std::round((chance - std::floor(chance)) * 100));
     m_faction_coins[target] += amount;
+    m_stat_tracker.m_total_faction_coin_gain += amount;
 }
 void GameManager::set_faction_coin(Faction::FACTION_COINS faction, double amount) {
     m_faction_coins[faction] = amount;
@@ -256,7 +265,7 @@ void GameManager::add_mana(double amount) {
     if (gain >= get_mana_max() - get_mana()) 
         gain = get_mana_max() - get_mana();
     m_mana += gain;
-    // m_stat_tracker.m_total_gain += gain;
+    m_stat_tracker.m_mana_produced += gain;
 }
 
 void GameManager::set_mana(double value) {

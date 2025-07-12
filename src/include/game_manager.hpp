@@ -59,6 +59,7 @@ public:
     Buff m_mana_max_buff;
     Buff m_faction_coins_buff;
     Buff m_assistants_buff;
+    Buff m_assistant_faction_coins_buff;
 
     void start();
     void stop();

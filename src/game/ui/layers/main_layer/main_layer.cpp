@@ -83,8 +83,7 @@ void MainLayer::display() {
         std::string click_gain_text = std::format("Click gain {}", m_window_manager.get_game_manager().get_click_gain());
         std::string assistants_text = std::format("Assistants {}", m_window_manager.get_game_manager().get_assistants());
         std::string mana_text = std::format("Mana {} / {}", (int)m_window_manager.get_game_manager().get_mana(), (int)m_window_manager.get_game_manager().get_mana_max());
-        std::string morality_text = std::format("Morality : {}", (int)m_window_manager.get_game_manager().get_morality()); 
-        std::string faction_text = std::format("Faction : {}", (int)m_window_manager.get_game_manager().get_faction()); 
+        std::string morality_text = std::format("Morality : {} / Faction : {}", Faction::MORALITIES_NAMES[m_window_manager.get_game_manager().get_morality()], Faction::FACTIONS_NAMES[m_window_manager.get_game_manager().get_faction()]); 
         std::string faction_coins_text = std::format("Faction coins : [{}, {}, {}, {}, {}, {}]", 
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::FAIRY_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ELVEN_COIN),
@@ -93,7 +92,7 @@ void MainLayer::display() {
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::UNDEAD_COIN),
             m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::DEMON_COIN)
         );
-        std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_text, faction_coins_text};
+        std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_coins_text};
         m_window_manager.draw_text(to_print, 0, 0, 15, WindowManager::WHITE);
         Layer::display();
 }
