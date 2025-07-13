@@ -20,7 +20,7 @@ WindowManager::WindowManager(unsigned int width, unsigned int height, GameManage
         m_all_layers.push_back(m_main_layer);
 
         m_achievement_layer = std::make_shared<AchievementLayer>(std::ref(*this));
-        m_all_layers.push_back(m_achievement_layer);
+        // m_all_layers.push_back(m_achievement_layer);
     }
 
 void WindowManager::start() {
@@ -40,7 +40,14 @@ void WindowManager::start() {
                 if (buttonPressed->button == sf::Mouse::Button::Left) {
                     m_all_layers.back()->recv_click(buttonPressed->position.x, buttonPressed->position.y);
                 }
-                    
+            }
+            if (const sf::Event::MouseWheelScrolled* wheel = event->getIf<sf::Event::MouseWheelScrolled>()) {
+                m_all_layers.back()->recv_scroll(wheel->delta);
+            }
+            if (const sf::Event::KeyReleased* key_event = event->getIf<sf::Event::KeyReleased>()) {
+                if (key_event->code == sf::Keyboard::Key::A) {
+                    push_layer(m_achievement_layer);
+                } 
             }
 
         }
@@ -75,7 +82,7 @@ void WindowManager::draw_rect(  int x, int y,
     sf::RenderTexture& target = m_current_drawing_layer->m_render_texture;
     sf::RectangleShape rect;
     rect.setFillColor(color);
-    rect.setPosition(sf::Vector2f(x, y));
+    rect.setPosition(sf::Vector2f(x, y + m_current_drawing_layer->m_y_offset));
     rect.setSize(sf::Vector2f(width, height));
     target.draw(rect);
 }
@@ -83,7 +90,7 @@ void WindowManager::draw_rect(  int x, int y,
 void WindowManager::draw_text(  std::string text, int x, int y, 
                                 int size, sf::Color color) {
     sf::RenderTexture& target = m_current_drawing_layer->m_render_texture;
-    sf_text.setPosition(sf::Vector2f(x, y));
+    sf_text.setPosition(sf::Vector2f(x, y + m_current_drawing_layer->m_y_offset));
     sf_text.setString(text);
     sf_text.setCharacterSize(size);
     sf_text.setFillColor(color);

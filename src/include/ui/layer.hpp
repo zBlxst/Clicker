@@ -18,11 +18,15 @@ protected:
     int m_width;
     int m_height;
     
+    
 public:
+    int m_y_offset;
+    
     sf::RenderTexture m_render_texture;
     sf::Sprite get_sprite();
     Layer(int x, int y, int width, int height, WindowManager& window_manager);
     virtual void display();
     void recv_click(int x, int y);
+    virtual void recv_scroll(int delta) {};
 
 };

@@ -8,7 +8,7 @@ class Achievement;
 
 class AchievementButton : public Button {
 
-private:
+public:
     static constexpr int BASE_POS_X = 20;
     static constexpr int BASE_POS_Y = 20;
     static constexpr int WIDTH = 100;
@@ -17,6 +17,7 @@ private:
     static constexpr int H_SPACING = 10;
     static constexpr int N_COLS = 7;
 
+private:
     int m_ui_index;
     
     bool should_catch_click();

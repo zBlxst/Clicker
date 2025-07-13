@@ -24,7 +24,7 @@ void MoralityPicker::buy_callback() {
 
 std::vector<std::string> MoralityPicker::get_base_text_to_display() {
     std::vector<std::string> res = {
-        std::format("Morality : {}", Faction::MORALITIES_NAMES[m_morality])
+        std::format("Morality : {}", Faction::get_morality_name(m_morality))
     };
     return res;
 }

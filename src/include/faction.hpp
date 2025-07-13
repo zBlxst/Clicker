@@ -13,8 +13,7 @@ public:
         N_MORALITIES,
         NO_MORALITY,
     };
-    static constexpr std::string MORALITIES_NAMES[MORALITY::N_MORALITIES] = { "Good", "Bad", "Neutral"};
-
+    
     enum FACTION {
         FAIRY,
         ELVEN,
@@ -28,7 +27,7 @@ public:
         N_FACTIONS,
         NO_FACTION
     };
-
+    
     enum FACTION_COINS {
         FAIRY_COIN,
         ELVEN_COIN,
@@ -38,7 +37,7 @@ public:
         DEMON_COIN,
         N_FACTIONS_COINS,
     };
-
+    
     static constexpr FACTION BASE_FACTION_PER_MORALITY[N_MORALITIES][N_BASE_FACTIONS_PER_MORALITY] = {
         { FAIRY, ELVEN, ANGEL },
         { GOBLIN, UNDEAD, DEMON },
@@ -49,6 +48,8 @@ public:
         "Goblin", "Undead", "Demon",
         "Titan", "Druid", "Faceless",
     };
-
+    
     static std::vector<FACTION_COINS> get_faction_coins_per_faction(Faction::FACTION faction);
+    static std::string get_morality_name(MORALITY morality);
+    static std::string get_faction_name(FACTION faction);
 };

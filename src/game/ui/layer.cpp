@@ -10,6 +10,7 @@ Layer::Layer(int x, int y, int width, int height, WindowManager& window_manager)
     m_y(y),
     m_width(width),
     m_height(height),
+    m_y_offset(0),
     m_window_manager(window_manager),
     m_render_texture(sf::Vector2u(width, height)),
     m_all_buttons() {

@@ -1,6 +1,6 @@
 #include "faction.hpp"
 
-
+#include <iostream>
 
 std::vector<Faction::FACTION_COINS> Faction::get_faction_coins_per_faction(Faction::FACTION faction) {
     switch (faction) {
@@ -26,4 +26,46 @@ std::vector<Faction::FACTION_COINS> Faction::get_faction_coins_per_faction(Facti
         return { };
     }
     
+}
+
+std::string Faction::get_morality_name(MORALITY morality) {
+    switch (morality)
+    {
+    case GOOD:
+        return "Good";
+    case BAD:
+        return "Bad";
+    case NEUTRAL:
+        return "Neutral";
+    case NO_MORALITY:
+        return "None";
+    }
+    return "";
+}
+
+std::string Faction::get_faction_name(FACTION faction) {
+    switch (faction)
+    {
+    case FAIRY:
+        return "Fairy";
+    case ELVEN:
+        return "Elven";
+    case ANGEL:
+        return "Angel";
+    case GOBLIN:
+        return "Goblin";
+    case UNDEAD:
+        return "Undead";
+    case DEMON:
+        return "Demon";
+    case TITAN:
+        return "Titan";
+    case DRUID:
+        return "Druid";
+    case FACELESS:
+        return "Faceless";
+    case NO_FACTION:
+        return "None";
+    }
+    return "";
 }

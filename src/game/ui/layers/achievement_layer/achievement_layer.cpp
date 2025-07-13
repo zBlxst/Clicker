@@ -17,3 +17,13 @@ AchievementLayer::AchievementLayer(WindowManager& window_manager) :
             achievement_button->update_ui_index(n_achievement++);
         }
     }
+
+void AchievementLayer::recv_scroll(int delta) {
+    m_y_offset += 30*delta;
+    if (m_y_offset >= 0) {
+        m_y_offset = 0;
+    }
+    if (m_y_offset <= -MAX_SCROLL) {
+        m_y_offset = -MAX_SCROLL;
+    } 
+}

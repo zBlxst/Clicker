@@ -34,7 +34,7 @@ std::vector<std::shared_ptr<Achievement>> Achievement::get_all_achievements(Game
     // Building achievements
     for (int i = 0; i < Building::N_BUILDINGS; i++) {
         for (int j = 0; j < Achievement::N_BUILDING_ACHIEVEMENTS; j++) {
-            res.push_back(std::make_shared<Achievement>(game_manager, building_achievements(i, Achievement::MONEY_ACHIEVEMENTS[j]), std::format("Building {} {}", i, j)));
+            res.push_back(std::make_shared<Achievement>(game_manager, building_achievements(i, Achievement::BUILDING_ACHIEVEMENTS[j]), std::format("Building {} {}", i, j)));
         }
     }
     return res;
@@ -43,7 +43,7 @@ std::vector<std::shared_ptr<Achievement>> Achievement::get_all_achievements(Game
 
 void Achievement::update() {
     if (!m_obtained && check_if_obtained(m_game_manager)) {
-        std::cout << "Obtained" << std::endl;
+        std::cout << "Obtained : " << m_name << std::endl;
         m_game_manager.get_stat_tracker().m_n_achievements++;
         m_obtained = true;
     }

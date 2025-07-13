@@ -25,7 +25,7 @@
 
 GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
-    m_money(25000e100),
+    m_money(0),
     m_mana(DEFAULT_MANA_MAX),
     m_faction_coins({}),
     m_all_buildings(),
@@ -98,9 +98,9 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             }    
         }
 
-        for (int i = 0; i < 6; i++) {
-            m_faction_coins[i] = 10000;
-        }
+        // for (int i = 0; i < 6; i++) {
+        //     m_faction_coins[i] = 10000;
+        // }
 
         // Initialisation of misc upgrades
         n_upgrade = 0;

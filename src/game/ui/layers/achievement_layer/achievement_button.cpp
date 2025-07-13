@@ -29,7 +29,6 @@ void AchievementButton::update_ui_index(int index) {
     m_ui_index = index;
     m_x = BASE_POS_X + (m_ui_index % N_COLS)*(WIDTH+H_SPACING);
     m_y = BASE_POS_Y + (m_ui_index / N_COLS)*(HEIGHT+V_SPACING);
-    std::cout << std::format("Index : {} -> X : {} / Y : {}\n", index, m_x, m_y);
 }
 
 bool AchievementButton::should_catch_click() {
