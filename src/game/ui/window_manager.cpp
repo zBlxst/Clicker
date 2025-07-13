@@ -2,7 +2,8 @@
 
 #include "ui/layers/main_layer/main_layer.hpp"
 #include "ui/layers/achievement_layer/achievement_layer.hpp"
-#include "ui/button.hpp"
+#include "ui/layers/royal_exchange_layer/royal_exchange_layer.hpp"
+#include "ui/buttons/button.hpp"
 #include "game_manager.hpp"
 #include "building.hpp"
 #include "ui/layer.hpp"
@@ -21,6 +22,8 @@ WindowManager::WindowManager(unsigned int width, unsigned int height, GameManage
 
         m_achievement_layer = std::make_shared<AchievementLayer>(std::ref(*this));
         // m_all_layers.push_back(m_achievement_layer);
+
+        m_royal_exchange_layer = std::make_shared<RoyalExchangeLayer>(std::ref(*this));
     }
 
 void WindowManager::start() {
@@ -47,6 +50,9 @@ void WindowManager::start() {
             if (const sf::Event::KeyReleased* key_event = event->getIf<sf::Event::KeyReleased>()) {
                 if (key_event->code == sf::Keyboard::Key::A) {
                     push_layer(m_achievement_layer);
+                } 
+                if (key_event->code == sf::Keyboard::Key::R) {
+                    push_layer(m_royal_exchange_layer);
                 } 
             }
 

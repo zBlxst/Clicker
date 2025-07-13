@@ -29,8 +29,7 @@ std::vector<Faction::FACTION_COINS> Faction::get_faction_coins_per_faction(Facti
 }
 
 std::string Faction::get_morality_name(MORALITY morality) {
-    switch (morality)
-    {
+    switch (morality) {
     case GOOD:
         return "Good";
     case BAD:
@@ -44,8 +43,7 @@ std::string Faction::get_morality_name(MORALITY morality) {
 }
 
 std::string Faction::get_faction_name(FACTION faction) {
-    switch (faction)
-    {
+    switch (faction) {
     case FAIRY:
         return "Fairy";
     case ELVEN:
@@ -66,6 +64,24 @@ std::string Faction::get_faction_name(FACTION faction) {
         return "Faceless";
     case NO_FACTION:
         return "None";
+    }
+    return "";
+}
+
+std::string Faction::get_faction_coins_name(FACTION_COINS faction) {
+    switch (faction) {
+    case FAIRY_COIN:
+        return "Fairy";
+    case ELVEN_COIN:
+        return "Elven";
+    case ANGEL_COIN:
+        return "Angel";
+    case GOBLIN_COIN:
+        return "Goblin";
+    case UNDEAD_COIN:
+        return "Undead";
+    case DEMON_COIN:
+        return "Demon";
     }
     return "";
 }

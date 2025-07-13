@@ -52,4 +52,5 @@ public:
     static std::vector<FACTION_COINS> get_faction_coins_per_faction(Faction::FACTION faction);
     static std::string get_morality_name(MORALITY morality);
     static std::string get_faction_name(FACTION faction);
+    static std::string get_faction_coins_name(FACTION_COINS faction);
 };

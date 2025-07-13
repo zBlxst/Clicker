@@ -17,6 +17,7 @@ class GameManager {
 public:
     static constexpr double DEFAULT_MANA_MAX = 1000;
     static constexpr double DEFAULT_FACTION_COIN_CHANCE = 0.1;
+    static constexpr double DEFAULT_ROYAL_EXCHANGE_VALUE = 0.1;
 
 private:
     StatTracker& m_stat_tracker;
@@ -24,6 +25,7 @@ private:
     double m_money;
     double m_mana;
     double m_faction_coins[Faction::FACTION_COINS::N_FACTIONS_COINS];
+    int m_royal_exchanges[Faction::FACTION_COINS::N_FACTIONS_COINS];
 
     std::vector<std::shared_ptr<std::thread>> m_all_threads;
 
@@ -58,6 +60,7 @@ public:
     Buff m_mana_regen_buff;
     Buff m_mana_max_buff;
     Buff m_faction_coins_buff;
+    Buff m_royal_exchange_buff;
     Buff m_assistants_buff;
     Buff m_assistant_faction_coins_buff;
 
@@ -72,8 +75,14 @@ public:
     
     double get_faction_coin(Faction::FACTION_COINS faction);
     void add_faction_coin(double chance);
-    void set_faction_coin(Faction::FACTION_COINS faction, double chance);
+    void set_faction_coin(Faction::FACTION_COINS faction, double amount);
     bool buy_faction_coins(double cost, std::vector<Faction::FACTION_COINS> faction_coins);
+
+    int get_royal_exchange(Faction::FACTION_COINS faction);
+    void add_royal_exchange(Faction::FACTION_COINS faction, int amount);
+    void set_royal_exchange(Faction::FACTION_COINS faction, int amount);
+
+    
     
     
     void add_mana(double amount);

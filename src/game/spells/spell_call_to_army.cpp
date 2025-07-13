@@ -17,7 +17,6 @@ void SpellCallToArmy::thread_function() {
         while (!m_running && m_game_manager.is_running()) {
             sleep(1);
         }
-        m_remaining_time = m_max_time;
         std::shared_ptr<std::function<double(GameManager&)>> func_pointer = std::make_shared<std::function<double(GameManager&)>>(SpellCallToArmy::get_buff_static);
         m_game_manager.m_production_buff.m_multiplicative_buff_callbacks.push_back(func_pointer);
         while(m_remaining_time-- > 0 && m_game_manager.is_running()) {
@@ -29,7 +28,12 @@ void SpellCallToArmy::thread_function() {
 }
 
 void SpellCallToArmy::callback() {
+    m_remaining_time = m_max_time;
     m_running = true;
+}
+
+bool SpellCallToArmy::is_available() {
+    return true;
 }
 
 double SpellCallToArmy::get_buff() {

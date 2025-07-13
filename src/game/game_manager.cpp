@@ -28,6 +28,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_money(0),
     m_mana(DEFAULT_MANA_MAX),
     m_faction_coins({}),
+    m_royal_exchanges({}),
     m_all_buildings(),
     m_all_upgrades(),
     m_all_spells(Spell::get_one_of_each(std::ref(*this))),
@@ -42,6 +43,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_mana_regen_buff(std::ref(*this)),
     m_mana_max_buff(std::ref(*this)),
     m_faction_coins_buff(std::ref(*this)),
+    m_royal_exchange_buff(std::ref(*this)),
     m_assistants_buff(std::ref(*this)),
     m_assistant_faction_coins_buff(std::ref(*this)),
 
@@ -98,10 +100,6 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             }    
         }
 
-        // for (int i = 0; i < 6; i++) {
-        //     m_faction_coins[i] = 10000;
-        // }
-
         // Initialisation of misc upgrades
         n_upgrade = 0;
         for (int i = 0; i < ClickUpgrade::N_UPGRADES; i++) {
@@ -117,11 +115,27 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
         }
 
+        // Royal exchange buff
+        m_production_buff.m_multiplicative_buff_callbacks.push_back(
+          std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) {
+            int n_exchanges = 0;
+            for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+                n_exchanges += game_manager.get_royal_exchange((Faction::FACTION_COINS)i);
+            }
+            return 1 + game_manager.m_royal_exchange_buff.get_buffed_value(DEFAULT_FACTION_COIN_CHANCE) * n_exchanges;
+          })  
+        );
+
         // Put threads in all_threads
         add_thread(m_buildings_thread);
         add_thread(m_assistants_thread);
         add_thread(m_mana_regen_thread);
         add_thread(m_achievement_thread);
+
+        // for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+        //     m_faction_coins[i] = 10000;
+        // }
+        // m_money = 100000;
 }
 
 void GameManager::add_assistants(int amount) {
@@ -238,6 +252,19 @@ void GameManager::add_faction_coin(double chance) {
 void GameManager::set_faction_coin(Faction::FACTION_COINS faction, double amount) {
     m_faction_coins[faction] = amount;
 }
+
+int GameManager::get_royal_exchange(Faction::FACTION_COINS faction) {
+    return m_royal_exchanges[faction];
+}
+void GameManager::add_royal_exchange(Faction::FACTION_COINS faction, int amount) {
+    m_royal_exchanges[faction] += amount;
+}
+
+void GameManager::set_royal_exchange(Faction::FACTION_COINS faction, int amount) {
+    m_royal_exchanges[faction] = amount;
+}
+
+
 
 bool GameManager::buy(double cost) {
     // If not running, it's probably loading a save

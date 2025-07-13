@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui/button.hpp"
+#include "ui/buttons/button.hpp"
 
 class WindowManager;
 

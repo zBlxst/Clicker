@@ -13,5 +13,6 @@ public:
     SpellTax(int index, GameManager& game_manager);
     void callback();
     double get_buff();
+    bool is_available();
 
 };

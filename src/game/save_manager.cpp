@@ -52,8 +52,14 @@ void SaveManager::load_misc_save() {
             m_game_manager.set_money(std::stod(value));
         } else if (type == "Mana") {
             m_game_manager.set_mana(std::stod(value));
+        } else if (type == "Morality") {
+            m_game_manager.set_morality((Faction::MORALITY)std::stoi(value));
+        } else if (type == "Faction") {
+            m_game_manager.set_faction((Faction::FACTION)std::stoi(value));
         } else if (type == "FactionCoin") {
             m_game_manager.set_faction_coin((Faction::FACTION_COINS)std::stoi(object), std::stod(value));
+        } else if (type == "Royal exchange") {
+            m_game_manager.set_royal_exchange((Faction::FACTION_COINS)std::stoi(object), std::stod(value));
         } else if (type == "Building") {
             load_building(object, value);
         } else if (type == "FactionUpgrade") {
@@ -75,9 +81,17 @@ void SaveManager::store_misc_save() {
     file_stream << std::format("Gold : () -> {}\n", m_game_manager.get_money());
     file_stream << std::format("Mana : () -> {}\n", m_game_manager.get_mana());
     
+    file_stream << std::format("Morality : () -> {}\n", (int)m_game_manager.get_morality());
+    file_stream << std::format("Faction : () -> {}\n", (int)m_game_manager.get_faction());
+
     // Faction coins
     for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
         file_stream << std::format("FactionCoin : {} -> {}\n", i, m_game_manager.get_faction_coin((Faction::FACTION_COINS)i));
+    }
+
+    // Royal exchanges
+    for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+        file_stream << std::format("Royal exchange : {} -> {}\n", i, m_game_manager.get_royal_exchange((Faction::FACTION_COINS)i));
     }
 
     // Buildings

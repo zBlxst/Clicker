@@ -8,6 +8,7 @@ class GameManager;
 class Layer;
 class MainLayer;
 class AchievementLayer;
+class RoyalExchangeLayer;
 
 class WindowManager {
 public:
@@ -28,6 +29,7 @@ private:
 
     std::shared_ptr<MainLayer> m_main_layer;
     std::shared_ptr<AchievementLayer> m_achievement_layer;
+    std::shared_ptr<RoyalExchangeLayer> m_royal_exchange_layer;
     
 public:
     WindowManager(unsigned int width, unsigned int height, GameManager& game_manager);

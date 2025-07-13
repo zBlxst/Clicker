@@ -11,3 +11,7 @@ void SpellTax::callback() {
 double SpellTax::get_buff() {
     return 30;
 }
+
+bool SpellTax::is_available() {
+    return true;
+}

@@ -32,7 +32,7 @@ public:
     int get_remaining_time();
 
     virtual void callback() = 0;
-    bool is_available() {return true;};
+    virtual bool is_available() = 0;
     bool is_running();
     std::vector<std::string> get_base_text_to_display();
 };

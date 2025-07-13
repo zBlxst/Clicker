@@ -4,6 +4,8 @@
 
 #include "spells/spell_tax.hpp"
 #include "spells/spell_call_to_army.hpp"
+#include "spells/spell_holy_light.hpp"
+#include "spells/spell_blood_frenzy.hpp"
 
 Spell::Spell(double cost, int index, GameManager& game_manager, int max_time) :
     m_cost(cost),
@@ -34,7 +36,9 @@ std::vector<std::shared_ptr<Spell>> Spell::get_one_of_each(GameManager& game_man
     int spell_index = 0;
     return {
         std::make_shared<SpellTax>(spell_index++, game_manager),
-        std::make_shared<SpellCallToArmy>(spell_index++, game_manager)
+        std::make_shared<SpellCallToArmy>(spell_index++, game_manager),
+        std::make_shared<SpellHolyLight>(spell_index++, game_manager),
+        std::make_shared<SpellBloodFrenzy>(spell_index++, game_manager),
     };
 }
 
