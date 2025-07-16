@@ -1,11 +1,10 @@
 #include "ui/layers/royal_exchange_layer/royal_exchange_button.hpp"
 
-#include <format>
-#include <math.h>
 
 #include "game_manager.hpp"
 #include "window_manager.hpp"
 #include "achievement.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <format>
@@ -29,7 +28,7 @@ void RoyalExchangeButton::display() {
     Button::display();
     std::vector<std::string> to_write = { 
         std::format("Faction coin : {}", Faction::get_faction_coins_name(m_faction_coins)),
-        std::format("Cost : {}", get_cost()),
+        std::format("Cost : {}", double_to_string(get_cost())),
     };
     m_window_manager.draw_text(to_write, m_x, m_y, 15, WindowManager::BLACK);
 }
@@ -45,8 +44,5 @@ void RoyalExchangeButton::update_ui_index(int index) {
 }
 
 sf::Color RoyalExchangeButton::get_background_color() {
-    // if (m_achievement->is_obtained()) {
-    //     return sf::Color::White;
-    // }
     return sf::Color(0xffffff80);
 }

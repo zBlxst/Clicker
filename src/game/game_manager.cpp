@@ -136,6 +136,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         //     m_faction_coins[i] = 10000;
         // }
         // m_money = 100000;
+        // m_production_buff.m_multiplicative_buff *= 100;
 }
 
 void GameManager::add_assistants(int amount) {

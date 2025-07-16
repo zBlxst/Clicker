@@ -5,6 +5,7 @@
 
 #include "game_manager.hpp"
 #include "upgrades/upgrade.hpp"
+#include "utils.hpp"
 
 UpgradeButton::UpgradeButton(   std::shared_ptr<Upgrade> upgrade, 
                                 WindowManager& window_manager) :
@@ -24,8 +25,8 @@ void UpgradeButton::display() {
     if (m_upgrade->is_available()) {
         Button::display();
         std::vector<std::string> to_write = m_upgrade->get_base_text_to_display();
-        to_write.push_back(std::format("Buff : {}", std::round(m_upgrade->get_buff())));
-        to_write.push_back(std::format("Cost : {}", std::round(m_upgrade->get_cost()))); 
+        to_write.push_back(std::format("Buff : {}", double_to_string(m_upgrade->get_buff())));
+        to_write.push_back(std::format("Cost : {}", double_to_string(m_upgrade->get_cost()))); 
         m_window_manager.draw_text(to_write, m_x, m_y, 15, WindowManager::BLACK);
     }
 }

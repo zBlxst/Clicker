@@ -5,6 +5,7 @@
 
 #include "game_manager.hpp"
 #include "spells/spell.hpp"
+#include "utils.hpp"
 
 SpellButton::SpellButton(   std::shared_ptr<Spell> spell, 
                                 WindowManager& window_manager) :
@@ -24,8 +25,8 @@ void SpellButton::display() {
     if (m_spell->is_available()) {
         Button::display();
         std::vector<std::string> to_write = m_spell->get_base_text_to_display();
-        to_write.push_back(std::format("Cost : {}", std::round(m_spell->get_cost()))); 
-        to_write.push_back(std::format("Buff : {}", std::round(m_spell->get_buff()*100)/100));
+        to_write.push_back(std::format("Cost : {}", double_to_string(m_spell->get_cost()))); 
+        to_write.push_back(std::format("Buff : {}", double_to_string((m_spell->get_buff()*100)/100)));
         if (m_spell->is_running()) {
             to_write.push_back(std::format("Time : {}s", m_spell->get_remaining_time()));
         }
