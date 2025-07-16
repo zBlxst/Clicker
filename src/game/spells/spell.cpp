@@ -42,6 +42,9 @@ void Spell::callback() {
 }
 
 void Spell::thread_function() {
+    // Wait for the GameManager to start
+    while (!m_game_manager.is_running()) {}
+
     while (m_game_manager.is_running()) {
         while (!m_running && m_game_manager.is_running()) {
             sleep(1);
