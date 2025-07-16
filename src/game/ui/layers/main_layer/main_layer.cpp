@@ -80,22 +80,25 @@ void MainLayer::display() {
         }
     }
 
-    std::string money_text = std::format("Money {}", double_to_string(m_window_manager.get_game_manager().get_money()));
-        std::string gain_text = std::format("Gain {}/s", double_to_string(m_window_manager.get_game_manager().get_prod()));
-        std::string total_clicks_text = std::format("Total clicks {}", m_window_manager.get_game_manager().get_stat_tracker().m_clicks);
-        std::string click_gain_text = std::format("Click gain {}", double_to_string(m_window_manager.get_game_manager().get_click_gain()));
-        std::string assistants_text = std::format("Assistants {}", m_window_manager.get_game_manager().get_assistants());
-        std::string mana_text = std::format("Mana {} / {}", double_to_string(m_window_manager.get_game_manager().get_mana()), double_to_string(m_window_manager.get_game_manager().get_mana_max()));
-        std::string morality_text = std::format("Morality : {} / Faction : {}", Faction::get_morality_name(m_window_manager.get_game_manager().get_morality()), Faction::get_faction_name(m_window_manager.get_game_manager().get_faction())); 
+    GameManager& game_manager = m_window_manager.get_game_manager();
+
+    std::string money_text = std::format("Money {}", double_to_string(game_manager.get_money()));
+        std::string gain_text = std::format("Gain {}/s", double_to_string(game_manager.get_prod()));
+        std::string total_clicks_text = std::format("Total clicks {}", game_manager.get_stat_tracker().m_clicks);
+        std::string click_gain_text = std::format("Click gain {}", double_to_string(game_manager.get_click_gain()));
+        std::string assistants_text = std::format("Assistants {}", game_manager.get_assistants());
+        std::string mana_text = std::format("Mana {} / {}", double_to_string(game_manager.get_mana()), double_to_string(game_manager.get_mana_max()));
+        std::string morality_text = std::format("Morality : {} / Faction : {}", Faction::get_morality_name(game_manager.get_morality()), Faction::get_faction_name(game_manager.get_faction())); 
         std::string faction_coins_text = std::format("Faction coins : [{}, {}, {}, {}, {}, {}]", 
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::FAIRY_COIN)),
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ELVEN_COIN)),
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::ANGEL_COIN)),
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::GOBLIN_COIN)),
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::UNDEAD_COIN)),
-            double_to_string(m_window_manager.get_game_manager().get_faction_coin(Faction::FACTION_COINS::DEMON_COIN))
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::FAIRY_COIN)),
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::ELVEN_COIN)),
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::ANGEL_COIN)),
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::GOBLIN_COIN)),
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::UNDEAD_COIN)),
+            double_to_string(game_manager.get_faction_coin(Faction::FACTION_COINS::DEMON_COIN))
         );
-    std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_coins_text};
+        std::string gems_text = std::format("Current gems : {} / Reset for {}", double_to_string(game_manager.get_gems()), double_to_string(game_manager.get_gems_after_reset()));
+    std::vector<std::string> to_print = {money_text, gain_text, total_clicks_text, click_gain_text, assistants_text, mana_text, morality_text, faction_coins_text, gems_text};
     m_window_manager.draw_text(to_print, 0, 0, 15, WindowManager::WHITE);
     Layer::display();
 }

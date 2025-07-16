@@ -7,8 +7,8 @@ void TODO() {
     std::cout << "TODO" << std::endl;
 }
 
-std::string POWERS_OF_1000[102] = {
-    "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No",
+std::string POWERS_OF_1000[103] = {
+    "", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No",
     "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", 
     "Vg", "Uvg", "Dvg", "Tvg", "Qavg", "Qivg", "Sxvg", "Spvg", "Ocvg", "Novg", 
     "Tg", "Utg", "Dtg", "Ttg", "Qatg", "Qitg", "Sxtg", "Sptg", "Octg", "Notg", 
@@ -22,7 +22,7 @@ std::string POWERS_OF_1000[102] = {
 };
 
 double four_digits(double value) {
-    if (value >= 1000 || value < 1) {
+    if (value >= 1000) {
         return value;
     }
     if (value < 10) {

@@ -24,6 +24,7 @@ private:
 
     double m_money;
     double m_mana;
+    double m_gems;
     double m_faction_coins[Faction::FACTION_COINS::N_FACTIONS_COINS];
     int m_royal_exchanges[Faction::FACTION_COINS::N_FACTIONS_COINS];
 
@@ -68,10 +69,16 @@ public:
     void stop();
     
     void click(bool manual);
+
     double get_money();
     void add_money(double amount);
     void set_money(double value);
     bool buy(double cost);
+
+    double get_gems();
+    void add_gems(double amount);
+    void set_gems(double value);
+    double get_gems_after_reset();
     
     double get_faction_coin(Faction::FACTION_COINS faction);
     void add_faction_coin(double chance);

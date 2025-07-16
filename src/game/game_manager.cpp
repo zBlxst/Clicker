@@ -27,6 +27,7 @@ GameManager::GameManager(StatTracker& stat_tracker) :
     m_stat_tracker(stat_tracker),
     m_money(0),
     m_mana(DEFAULT_MANA_MAX),
+    m_gems(0),
     m_faction_coins({}),
     m_royal_exchanges({}),
     m_all_buildings(),
@@ -146,6 +147,22 @@ void GameManager::add_assistants(int amount) {
 
 double GameManager::get_money() {
     return m_money;
+}
+
+double GameManager::get_gems() {
+    return m_gems;
+}
+
+void GameManager::add_gems(double amount) {
+    m_gems += amount;
+}
+
+void GameManager::set_gems(double value) {
+    m_gems = value;
+}
+
+double GameManager::get_gems_after_reset() {
+    return (sqrt(1 + 4 * m_money / 5e11) - 1) / 2;
 }
 
 void GameManager::click(bool manual) {
