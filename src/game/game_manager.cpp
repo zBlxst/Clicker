@@ -218,7 +218,7 @@ void GameManager::setup() {
 
     // Building
     for (std::shared_ptr<Building> building : m_all_buildings) {
-        building->reset();
+        building->setup();
     }
 }
 

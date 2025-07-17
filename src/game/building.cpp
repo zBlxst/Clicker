@@ -11,9 +11,7 @@ Building::Building(int index, GameManager& game_manager) :
     m_level(0),
     m_buff(game_manager),
     m_cost_multiplier_buff(0),
-    m_morality(Faction::MORALITY::NEUTRAL) {
-        setup();
-    }
+    m_morality(Faction::MORALITY::NEUTRAL) {}
 
 void Building::reset() {
     m_level = 0;

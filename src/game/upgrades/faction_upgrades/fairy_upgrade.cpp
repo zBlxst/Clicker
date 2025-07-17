@@ -75,8 +75,8 @@ void FairyUpgrade::callback5() {
 }
 
 void FairyUpgrade::callback6() {
-    m_game_manager.get_all_buildings()[1]->m_buff.m_additive_buff += 580;
-    m_game_manager.get_all_buildings()[1]->m_cost_multiplier_buff -= 0.02;
+    m_game_manager.get_all_buildings()[2]->m_buff.m_additive_buff += 580;
+    m_game_manager.get_all_buildings()[2]->m_cost_multiplier_buff -= 0.02;
 }
 
 void FairyUpgrade::callback7() {
