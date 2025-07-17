@@ -9,6 +9,10 @@ Upgrade::Upgrade(int index_in_gm, GameManager& game_manager) :
     m_game_manager(game_manager),
     m_bought(false) {}
 
+void Upgrade::reset() {
+    m_bought = false;
+}
+
 bool Upgrade::is_bought() {
     return m_bought;
 }

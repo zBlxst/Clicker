@@ -54,6 +54,9 @@ void WindowManager::start() {
                 if (key_event->code == sf::Keyboard::Key::R) {
                     push_layer(m_royal_exchange_layer);
                 } 
+                if (key_event->code == sf::Keyboard::Key::Space) {
+                    m_game_manager.abdicate();
+                } 
             }
 
         }

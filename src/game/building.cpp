@@ -12,12 +12,23 @@ Building::Building(int index, GameManager& game_manager) :
     m_buff(game_manager),
     m_cost_multiplier_buff(0),
     m_morality(Faction::MORALITY::NEUTRAL) {
-        if (m_index == 10) {
-            m_buff.m_multiplicative_buff_callbacks.push_back(
-                std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) { return game_manager.get_stat_tracker().m_n_achievements; })
-            );
-        }
+        setup();
     }
+
+void Building::reset() {
+    m_level = 0;
+    m_buff.reset();
+    m_cost_multiplier_buff = 0;
+    m_morality = Faction::MORALITY::NEUTRAL;
+}
+
+void Building::setup() {
+    if (m_index == 10) {
+        m_buff.m_multiplicative_buff_callbacks.push_back(
+            std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) { return game_manager.get_stat_tracker().m_n_achievements; })
+        );
+    }
+}
 
 int Building::get_level() {
     return m_level;

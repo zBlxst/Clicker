@@ -27,6 +27,17 @@ double Buff::get_buffed_value(double value) {
     return value;
 }
 
+void Buff::reset() {
+    m_additive_buff = 0;
+    m_multiplicative_buff = 1;
+    m_exponential_buff = 1;
+
+    m_additive_buff_callbacks.clear();
+    m_multiplicative_buff_callbacks.clear();
+    m_exponential_buff_callbacks.clear();
+    m_misc_callbacks.clear();
+}
+
 void Buff::remove_callback(std::shared_ptr<std::function<double(GameManager&)>> func_pointer) {
     std::erase(m_additive_buff_callbacks, func_pointer);
     std::erase(m_multiplicative_buff_callbacks, func_pointer);

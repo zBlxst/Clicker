@@ -18,6 +18,7 @@ public:
     static constexpr double DEFAULT_MANA_MAX = 1000;
     static constexpr double DEFAULT_FACTION_COIN_CHANCE = 0.1;
     static constexpr double DEFAULT_ROYAL_EXCHANGE_VALUE = 0.1;
+    static constexpr double DEFAULT_GEM_PRODUCTION_BUFF = 0.02;
 
 private:
     StatTracker& m_stat_tracker;
@@ -80,6 +81,10 @@ public:
     void set_gems(double value);
     double get_gems_after_reset();
     
+    void reset();
+    void setup();
+    void abdicate();
+
     double get_faction_coin(Faction::FACTION_COINS faction);
     void add_faction_coin(double chance);
     void set_faction_coin(Faction::FACTION_COINS faction, double amount);

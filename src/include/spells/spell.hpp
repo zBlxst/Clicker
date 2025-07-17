@@ -45,4 +45,6 @@ public:
     virtual bool is_available() = 0;
     bool is_running();
     std::vector<std::string> get_base_text_to_display();
+
+    void reset();
 };

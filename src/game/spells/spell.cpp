@@ -22,6 +22,10 @@ Spell::Spell(double cost, int index, int max_time, std::shared_ptr<std::function
         m_game_manager.add_thread(m_thread);
     }
 
+void Spell::reset() {
+    m_remaining_time = 0;
+}
+
 void Spell::cast() {
     if (m_game_manager.cast_spell(m_cost)) {
         callback();

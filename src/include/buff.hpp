@@ -22,6 +22,8 @@ public:
 
     void remove_callback(std::shared_ptr<std::function<double(GameManager&)>>);
 
+    void reset();
+
     Buff(GameManager& game_manager);
     double get_buffed_value(double value);
     void call_misc_callbacks();

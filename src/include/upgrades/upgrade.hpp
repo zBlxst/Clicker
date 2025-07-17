@@ -33,4 +33,6 @@ public:
 
     bool is_bought();
     virtual std::vector<std::string> get_base_text_to_display() = 0;
+
+    void reset();
 };

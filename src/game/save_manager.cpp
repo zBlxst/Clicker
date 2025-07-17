@@ -52,6 +52,8 @@ void SaveManager::load_misc_save() {
             m_game_manager.set_money(std::stod(value));
         } else if (type == "Mana") {
             m_game_manager.set_mana(std::stod(value));
+        } else if (type == "Gems") {
+            m_game_manager.set_gems(std::stod(value));
         } else if (type == "Morality") {
             m_game_manager.set_morality((Faction::MORALITY)std::stoi(value));
         } else if (type == "Faction") {
@@ -79,6 +81,7 @@ void SaveManager::load_misc_save() {
 void SaveManager::store_misc_save() {
     std::ofstream file_stream(m_misc_file_name);
     file_stream << std::format("Gold : () -> {}\n", m_game_manager.get_money());
+    file_stream << std::format("Gems : () -> {}\n", m_game_manager.get_gems());
     file_stream << std::format("Mana : () -> {}\n", m_game_manager.get_mana());
     
     file_stream << std::format("Morality : () -> {}\n", (int)m_game_manager.get_morality());

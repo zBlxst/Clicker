@@ -42,4 +42,6 @@ public:
     void level_up();
     bool is_available();
     void set_level(int value);
+    void reset();
+    void setup();
 };

@@ -116,17 +116,6 @@ GameManager::GameManager(StatTracker& stat_tracker) :
             m_all_upgrades[Upgrade::TYPES::MISC].push_back(c_up);
         }
 
-        // Royal exchange buff
-        m_production_buff.m_multiplicative_buff_callbacks.push_back(
-          std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) {
-            int n_exchanges = 0;
-            for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
-                n_exchanges += game_manager.get_royal_exchange((Faction::FACTION_COINS)i);
-            }
-            return 1 + game_manager.m_royal_exchange_buff.get_buffed_value(DEFAULT_FACTION_COIN_CHANCE) * n_exchanges;
-          })  
-        );
-
         // Put threads in all_threads
         add_thread(m_buildings_thread);
         add_thread(m_assistants_thread);
@@ -137,7 +126,100 @@ GameManager::GameManager(StatTracker& stat_tracker) :
         //     m_faction_coins[i] = 10000;
         // }
         // m_money = 100000;
-        // m_production_buff.m_multiplicative_buff *= 100;
+        m_production_buff.m_multiplicative_buff *= 100;
+
+        setup();
+}
+
+void GameManager::abdicate() {
+    double gems = get_gems_after_reset();
+    if (gems < 1) {
+        return;
+    }
+    reset();
+    set_gems(gems);
+}
+
+void GameManager::reset() {
+    // Buffs
+    m_production_buff.reset();
+    m_click_buff.reset();
+    m_mana_regen_buff.reset();
+    m_mana_max_buff.reset();
+    m_faction_coins_buff.reset();
+    m_royal_exchange_buff.reset();
+    m_assistants_buff.reset();
+    m_assistant_faction_coins_buff.reset();
+
+    // Buildings
+    for (std::shared_ptr<Building> building : m_all_buildings) {
+        building->reset();
+    }
+
+    // Spells
+    for (std::shared_ptr<Spell> spell : m_all_spells) {
+        spell->reset();
+    }
+
+    // Upgrade
+    for (int i = 0; i < Upgrade::TYPES::N_ITEMS; i++) {
+        for (std::shared_ptr<Upgrade> upgrade : m_all_upgrades[i]) {
+            upgrade->reset();
+        }
+    }
+
+    // Factions
+    m_faction = Faction::FACTION::NO_FACTION;
+    m_morality = Faction::MORALITY::NO_MORALITY;
+
+    // Money
+    m_money = 0;
+
+    // Faction coins and Royal Exchanges
+    for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+        m_faction_coins[i] = 0;
+        m_royal_exchanges[i] = 0;
+    }
+
+    // Assistants
+    m_real_assistants = 0;
+
+    // Mana
+    m_mana = get_mana_max();
+
+
+    setup();
+}
+
+void GameManager::setup() {
+    // Royal exchange buff
+    m_production_buff.m_multiplicative_buff_callbacks.push_back(
+        std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) {
+            int n_exchanges = 0;
+            for (int i = 0; i < Faction::FACTION_COINS::N_FACTIONS_COINS; i++) {
+                n_exchanges += game_manager.get_royal_exchange((Faction::FACTION_COINS)i);
+            }
+            return 1 + game_manager.m_royal_exchange_buff.get_buffed_value(DEFAULT_FACTION_COIN_CHANCE) * n_exchanges;
+        })  
+    );
+
+    // Gem buff (to be put in an upgrade later)
+    m_production_buff.m_multiplicative_buff_callbacks.push_back(
+        std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) {
+            return 1 + game_manager.get_gems()*GameManager::DEFAULT_GEM_PRODUCTION_BUFF;
+        })  
+    );
+    m_faction_coins_buff.m_multiplicative_buff_callbacks.push_back(
+        std::make_shared<std::function<double(GameManager&)>>([](GameManager& game_manager) {
+            return 1 + 1.25*pow(log(1+game_manager.get_gems()), 0.9)/log(10);
+        })  
+    );
+
+
+    // Building
+    for (std::shared_ptr<Building> building : m_all_buildings) {
+        building->reset();
+    }
 }
 
 void GameManager::add_assistants(int amount) {
@@ -162,7 +244,7 @@ void GameManager::set_gems(double value) {
 }
 
 double GameManager::get_gems_after_reset() {
-    return (sqrt(1 + 4 * m_money / 5e11) - 1) / 2;
+    return std::floor((sqrt(1 + 4 * m_money / 5e11) - 1) / 2);
 }
 
 void GameManager::click(bool manual) {
