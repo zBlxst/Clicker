@@ -28,7 +28,7 @@ void BuildingButton::display() {
     Button::display();
     std::vector<std::string> to_write = {   std::format("Level : {}", m_game_manager.get_all_buildings()[m_index]->get_level()),
                                             std::format("Cost : {}", double_to_string(m_game_manager.get_all_buildings()[m_index]->get_cost())),
-                                            std::format("Gain : {}/s", double_to_string(m_game_manager.get_all_buildings()[m_index]->get_gain())),
+                                            std::format("Gain : {}/s", double_to_string(m_game_manager.m_production_buff.get_buffed_value(m_game_manager.get_all_buildings()[m_index]->get_gain()))),
                                         }; 
     m_window_manager.draw_text(to_write, m_x, m_y, 15, WindowManager::BLACK);
 }
